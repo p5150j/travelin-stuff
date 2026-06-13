@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# firebase source snippet (keys live in .env.local)
+firebase.txt
+
+# claude code internal
+.agents/
+# Claude Code internal
+skills-lock.json
