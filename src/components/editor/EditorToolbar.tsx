@@ -54,6 +54,22 @@ export default function EditorToolbar({ editor }: Props) {
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }
 
+  /** Caption lives as an attribute on the image node, so this edits the
+      currently selected image rather than inserting anything. */
+  function setCaption() {
+    const prev = editor.getAttributes("image").caption;
+    const caption = window.prompt("Caption", prev ?? "");
+    if (caption === null) return;
+    editor
+      .chain()
+      .focus()
+      .updateAttributes("image", { caption: caption.trim() || null })
+      .run();
+  }
+
+  const imageSelected = editor.isActive("image");
+  const inTable = editor.isActive("table");
+
   const btn = (active: boolean) =>
     `p-1.5 rounded text-sm transition-colors ${
       active
@@ -103,6 +119,15 @@ export default function EditorToolbar({ editor }: Props) {
       <button type="button" onClick={() => editor.chain().focus().toggleBlockquote().run()} className={btn(editor.isActive("blockquote"))} title="Blockquote">
         <QuoteIcon />
       </button>
+      <button
+        type="button"
+        onClick={() => editor.chain().focus().toggleNode("pullQuote", "paragraph").run()}
+        className={btn(editor.isActive("pullQuote")) + " flex items-center gap-1"}
+        title="Pull quote — a line lifted out of the flow, set large"
+      >
+        <QuoteIcon />
+        <span className="text-xs">Pull</span>
+      </button>
       <button type="button" onClick={() => editor.chain().focus().toggleCodeBlock().run()} className={btn(editor.isActive("codeBlock"))} title="Code block">
         <CodeIcon />
       </button>
@@ -142,6 +167,46 @@ export default function EditorToolbar({ editor }: Props) {
         <span className="text-xs">{uploading === "video" ? `${Math.round(progress)}%` : "Video"}</span>
       </button>
 
+      {/* Only meaningful with an image selected — click the image first. */}
+      <button
+        type="button"
+        onClick={setCaption}
+        disabled={!imageSelected}
+        className={btn(imageSelected && !!editor.getAttributes("image").caption) + " flex items-center gap-1 disabled:opacity-30"}
+        title={imageSelected ? "Add or edit caption" : "Select an image first"}
+      >
+        <CaptionIcon />
+        <span className="text-xs">Caption</span>
+      </button>
+
+      {divider}
+
+      {/* Data table. Starts 3×2 with a header row — the shape of a cost
+          breakdown, which is the main thing these are for. */}
+      <button
+        type="button"
+        onClick={() =>
+          editor.chain().focus().insertTable({ rows: 3, cols: 2, withHeaderRow: true }).run()
+        }
+        className={btn(false) + " flex items-center gap-1"}
+        title="Insert data table (cost breakdown, specs)"
+      >
+        <TableIcon />
+        <span className="text-xs">Table</span>
+      </button>
+
+      {/* Row/column controls only exist while the cursor is inside a table —
+          otherwise they're six dead buttons cluttering the bar. */}
+      {inTable && (
+        <>
+          <button type="button" onClick={() => editor.chain().focus().addRowAfter().run()} className={btn(false)} title="Add row below">+Row</button>
+          <button type="button" onClick={() => editor.chain().focus().deleteRow().run()} className={btn(false)} title="Delete row">−Row</button>
+          <button type="button" onClick={() => editor.chain().focus().addColumnAfter().run()} className={btn(false)} title="Add column right">+Col</button>
+          <button type="button" onClick={() => editor.chain().focus().deleteColumn().run()} className={btn(false)} title="Delete column">−Col</button>
+          <button type="button" onClick={() => editor.chain().focus().deleteTable().run()} className={btn(false) + " text-red-500"} title="Delete table">×Table</button>
+        </>
+      )}
+
       {divider}
 
       <button type="button" onClick={() => editor.chain().focus().setHorizontalRule().run()} className={btn(false)} title="Divider">—</button>
@@ -177,6 +242,12 @@ function LinkIcon() {
 }
 function ImageIcon() {
   return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 20M6 4h12a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2z" /></svg>;
+}
+function TableIcon() {
+  return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h16v14H4z M4 10h16 M10 10v9" /></svg>;
+}
+function CaptionIcon() {
+  return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h16v10H4z M6 19h9" /></svg>;
 }
 function VideoIcon() {
   return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M4 8h8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2z" /></svg>;

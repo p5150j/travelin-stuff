@@ -1,12 +1,6 @@
 "use client";
 import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Image from "@tiptap/extension-image";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import TextAlign from "@tiptap/extension-text-align";
-import Underline from "@tiptap/extension-underline";
-import { VideoNode } from "./VideoNode";
+import { editorExtensions } from "./extensions";
 import EditorToolbar from "./EditorToolbar";
 import { useEffect } from "react";
 
@@ -17,15 +11,7 @@ interface Props {
 
 export default function RichTextEditor({ value, onChange }: Props) {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Image.configure({ inline: false, allowBase64: false }),
-      Link.configure({ openOnClick: false, HTMLAttributes: { class: "text-orange-700 underline underline-offset-2" } }),
-      TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({ placeholder: "Start writing your post…" }),
-      VideoNode,
-    ],
+    extensions: editorExtensions,
     content: value,
     editorProps: {
       attributes: {

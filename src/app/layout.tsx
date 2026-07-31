@@ -1,11 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfair" });
+
+/* Fraunces replaces Playfair Display. Playfair is a high-contrast Didone — its
+   hairlines go spindly below ~30px, which is exactly where post-card titles
+   live. Fraunces carries an optical-size axis so it holds up small AND at
+   display size, and SOFT/WONK give it the warmth the design is after. */
+const serif = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-serif-family",
+  axes: ["SOFT", "WONK", "opsz"],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://yourdomain.com"),
@@ -45,8 +54,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
+    <html lang="en" className={`${inter.variable} ${serif.variable} h-full antialiased`}>
+      {/* bg/text come from globals.css (#faf9f6 / #1c1a16). The old
+          bg-stone-50 text-stone-900 utilities were cool-toned and fought the
+          warm palette everything else uses. */}
+      <body className="min-h-full flex flex-col">
+        <div className="grain" aria-hidden />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />

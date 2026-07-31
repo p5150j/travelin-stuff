@@ -10,48 +10,66 @@ interface Props {
 
 export default function PostCard({ post, large = false }: Props) {
   return (
-    <article className={`group relative overflow-hidden rounded-2xl bg-[#f5f3ee] ${large ? "aspect-[16/10]" : "aspect-[4/3]"}`}>
+    // Root stays <article> — AnimatedPostGrid queries for it to build the
+    // scroll stagger. Changing this tag silently kills the animation.
+    <article className="group relative">
       <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-10" aria-label={post.title} />
 
-      {post.coverImage ? (
-        <Image
-          src={post.coverImage}
-          alt={post.title}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f5f3ee] to-[#e8e3d8]" />
-      )}
+      {/* Image sits above the text rather than under a gradient. Taller crop on
+          phones (4:5) so a full-width card fills more of the screen; wider on
+          desktop where a tall card would push the title below the fold. */}
+      <div
+        className={`relative overflow-hidden rounded-xl bg-raised ${
+          large ? "aspect-[4/5] sm:aspect-[16/10]" : "aspect-[4/5] sm:aspect-[3/2]"
+        }`}
+      >
+        {post.coverImage ? (
+          <Image
+            src={post.coverImage}
+            alt={post.title}
+            fill
+            /* Mobile-first: one column full-bleed on phones, two up at sm,
+               three up at lg. Without this Next assumes 100vw everywhere and
+               over-fetches badly on the multi-column breakpoints. */
+            sizes={
+              large
+                ? "(min-width: 1024px) 66vw, 100vw"
+                : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+            }
+            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-raised to-border" />
+        )}
+      </div>
 
-      {/* gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
-      {/* content */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6">
-        <div className="flex items-center gap-2 text-xs text-[#c9a96e] mb-2 tracking-widest uppercase">
-          <span>{post.city}</span>
+      <div className="pt-4">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="label">{post.city}</span>
           {post.publishedAt && (
             <>
-              <span className="text-white/40">·</span>
-              <time className="text-white/50 normal-case tracking-normal">{formatDate(post.publishedAt)}</time>
+              <span className="text-faint" aria-hidden>·</span>
+              <time className="meta">{formatDate(post.publishedAt)}</time>
             </>
           )}
         </div>
-        <h2 className={`font-serif font-bold text-white leading-snug group-hover:text-[#c9a96e] transition-colors ${large ? "text-2xl sm:text-3xl" : "text-lg"}`}>
+
+        {/* Big serif title carries the hierarchy now that there's no image
+            overlay competing with it — 26px on mobile, up from the original 18px. */}
+        <h2
+          className={`font-serif font-bold text-ink tracking-[-0.015em] group-hover:text-gold transition-colors ${
+            large
+              ? "text-[2rem] sm:text-[2.625rem] leading-[1.06]"
+              : "text-[1.625rem] sm:text-[1.75rem] leading-[1.15]"
+          }`}
+        >
           {post.title}
         </h2>
+
         {large && (
-          <p className="mt-2 text-sm text-white/60 line-clamp-2 leading-relaxed">{post.excerpt}</p>
-        )}
-        {post.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {[...new Set(post.tags)].slice(0, 3).map((tag, i) => (
-              <span key={`${tag}-${i}`} className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-white/60 backdrop-blur-sm">
-                {tag}
-              </span>
-            ))}
-          </div>
+          <p className="mt-3 text-[0.9375rem] text-muted leading-relaxed line-clamp-2 max-w-prose">
+            {post.excerpt}
+          </p>
         )}
       </div>
     </article>

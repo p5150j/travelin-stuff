@@ -4,6 +4,7 @@ import { Timestamp } from "firebase/firestore";
 import { Post } from "@/lib/posts";
 import { slugify } from "@/lib/utils";
 import { uploadAsset } from "@/lib/storage";
+import CityCountryFields, { KnownCity } from "./CityCountryFields";
 import dynamic from "next/dynamic";
 
 const RichTextEditor = dynamic(() => import("@/components/editor/RichTextEditor"), { ssr: false });
@@ -12,9 +13,12 @@ interface Props {
   post: Post | null;
   onSave: (data: Omit<Post, "id">) => Promise<void>;
   onCancel: () => void;
+  /** Cities already in use, for the suggestion chips. Derived by the dashboard
+      from the posts it has already loaded. */
+  knownCities: KnownCity[];
 }
 
-export default function PostEditor({ post, onSave, onCancel }: Props) {
+export default function PostEditor({ post, onSave, onCancel, knownCities }: Props) {
   const [title, setTitle] = useState(post?.title ?? "");
   const [slug, setSlug] = useState(post?.slug ?? "");
   const [excerpt, setExcerpt] = useState(post?.excerpt ?? "");
@@ -50,8 +54,16 @@ export default function PostEditor({ post, onSave, onCancel }: Props) {
     e.preventDefault();
     setSaving(true);
     const now = Timestamp.now();
+    // Trim before storing. A stray trailing space in `city` is invisible in the
+    // UI but splits the city exactly like a casing difference does.
     await onSave({
-      title, slug, excerpt, content, city, country, coverImage,
+      title: title.trim(),
+      slug: slug.trim(),
+      excerpt: excerpt.trim(),
+      content,
+      city: city.trim(),
+      country: country.trim(),
+      coverImage: coverImage.trim(),
       tags: [...new Set(tags.split(",").map((t) => t.trim()).filter(Boolean))],
       published,
       publishedAt: published ? (post?.publishedAt ?? now) : null,
@@ -61,19 +73,19 @@ export default function PostEditor({ post, onSave, onCancel }: Props) {
     setSaving(false);
   }
 
-  const inputCls = "w-full px-3 py-2.5 bg-white border border-[#e8e3d8] rounded-lg text-sm text-[#1c1a16] placeholder-[#c4bdb4] focus:outline-none focus:border-[#1c1a16] transition-colors";
-  const labelCls = "block text-xs tracking-widest uppercase text-[#8a8074] mb-1.5";
+  const inputCls = "w-full px-3 py-2.5 bg-surface border border-border rounded-lg text-sm text-ink placeholder-faint focus:outline-none focus:border-ink transition-colors";
+  const labelCls = "block text-xs tracking-widest uppercase text-muted mb-1.5";
 
   return (
     <div className="max-w-4xl mx-auto px-5 sm:px-8 py-12">
-      <div className="flex items-center justify-between mb-10 pb-8 border-b border-[#e8e3d8]">
+      <div className="flex items-center justify-between mb-10 pb-8 border-b border-border">
         <div>
-          <p className="text-xs tracking-[0.3em] uppercase text-[#8b6835] mb-1">CMS</p>
-          <h1 className="font-serif text-2xl font-bold text-[#1c1a16]">
+          <p className="text-xs tracking-[0.3em] uppercase text-gold mb-1">CMS</p>
+          <h1 className="font-serif text-2xl font-bold text-ink">
             {post ? "Edit Post" : "New Post"}
           </h1>
         </div>
-        <button type="button" onClick={onCancel} className="text-sm text-[#8a8074] hover:text-[#1c1a16] transition-colors">
+        <button type="button" onClick={onCancel} className="text-sm text-muted hover:text-ink transition-colors">
           ← Back
         </button>
       </div>
@@ -89,16 +101,15 @@ export default function PostEditor({ post, onSave, onCancel }: Props) {
           <input className={inputCls} value={slug} onChange={(e) => setSlug(e.target.value)} required />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className={labelCls}>City</label>
-            <input className={inputCls} value={city} onChange={(e) => setCity(e.target.value)} required />
-          </div>
-          <div>
-            <label className={labelCls}>Country</label>
-            <input className={inputCls} value={country} onChange={(e) => setCountry(e.target.value)} required />
-          </div>
-        </div>
+        <CityCountryFields
+          city={city}
+          country={country}
+          onCityChange={setCity}
+          onCountryChange={setCountry}
+          knownCities={knownCities}
+          inputCls={inputCls}
+          labelCls={labelCls}
+        />
 
         <div>
           <label className={labelCls}>Cover Image</label>
@@ -109,14 +120,14 @@ export default function PostEditor({ post, onSave, onCancel }: Props) {
               type="button"
               onClick={() => coverInputRef.current?.click()}
               disabled={coverUploading}
-              className="shrink-0 px-4 py-2.5 border border-[#e8e3d8] rounded-lg text-sm text-[#8a8074] hover:border-[#1c1a16] hover:text-[#1c1a16] disabled:opacity-50 transition-colors"
+              className="shrink-0 px-4 py-2.5 border border-border rounded-lg text-sm text-muted hover:border-ink hover:text-ink disabled:opacity-50 transition-colors"
             >
               {coverUploading ? "Uploading…" : "Upload"}
             </button>
           </div>
           {coverImage && (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={coverImage} alt="Cover preview" className="mt-3 h-36 w-full object-cover rounded-xl border border-[#e8e3d8]" />
+            <img src={coverImage} alt="Cover preview" className="mt-3 h-36 w-full object-cover rounded-xl border border-border" />
           )}
         </div>
 
@@ -136,18 +147,18 @@ export default function PostEditor({ post, onSave, onCancel }: Props) {
         </div>
 
         <label className="flex items-center gap-3 cursor-pointer">
-          <div className={`w-10 h-6 rounded-full border transition-colors relative ${published ? "bg-[#1c1a16] border-[#1c1a16]" : "bg-transparent border-[#e8e3d8]"}`}>
-            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow-sm transition-transform ${published ? "translate-x-4" : "translate-x-0.5"}`} />
+          <div className={`w-10 h-6 rounded-full border transition-colors relative ${published ? "bg-ink border-ink" : "bg-transparent border-border"}`}>
+            <div className={`absolute top-0.5 w-5 h-5 rounded-full bg-surface shadow-sm transition-transform ${published ? "translate-x-4" : "translate-x-0.5"}`} />
             <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} className="sr-only" />
           </div>
-          <span className="text-sm text-[#1c1a16]">{published ? "Published" : "Draft"}</span>
+          <span className="text-sm text-ink">{published ? "Published" : "Draft"}</span>
         </label>
 
-        <div className="flex gap-3 pt-4 border-t border-[#e8e3d8]">
-          <button type="submit" disabled={saving} className="px-6 py-2.5 bg-[#1c1a16] text-white text-sm font-medium rounded-lg hover:bg-[#3a3630] disabled:opacity-50 transition-colors">
+        <div className="flex gap-3 pt-4 border-t border-border">
+          <button type="submit" disabled={saving} className="px-6 py-2.5 bg-ink text-white text-sm font-medium rounded-lg hover:bg-body disabled:opacity-50 transition-colors">
             {saving ? "Saving…" : "Save Post"}
           </button>
-          <button type="button" onClick={onCancel} className="px-6 py-2.5 border border-[#e8e3d8] text-[#8a8074] text-sm rounded-lg hover:border-[#1c1a16] hover:text-[#1c1a16] transition-colors">
+          <button type="button" onClick={onCancel} className="px-6 py-2.5 border border-border text-muted text-sm rounded-lg hover:border-ink hover:text-ink transition-colors">
             Cancel
           </button>
         </div>

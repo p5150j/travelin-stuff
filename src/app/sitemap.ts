@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllPosts, getCities } from "@/lib/posts";
+import { citySlug } from "@/lib/utils";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = "https://yourdomain.com";
@@ -15,7 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const cityUrls = cities.map(({ city }) => ({
-    url: `${base}/cities/${city.toLowerCase().replace(/\s+/g, "-")}`,
+    url: `${base}/cities/${citySlug(city)}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,

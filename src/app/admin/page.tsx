@@ -32,21 +32,21 @@ export default function AdminPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center min-h-screen text-[#8a8074]">Loading…</div>;
+    return <div className="flex items-center justify-center min-h-screen text-muted">Loading…</div>;
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#faf9f6]">
-        <div className="bg-white border border-[#e8e3d8] rounded-2xl p-10 w-full max-w-sm text-center shadow-sm">
-          <p className="text-xs tracking-[0.3em] uppercase text-[#8b6835] mb-4">CMS</p>
-          <h1 className="font-serif text-2xl font-bold text-[#1c1a16] mb-2">Wandering & Working</h1>
-          <p className="text-sm text-[#8a8074] mb-8">Sign in to manage your posts.</p>
+      <div className="min-h-screen flex items-center justify-center bg-bg">
+        <div className="bg-surface border border-border rounded-2xl p-10 w-full max-w-sm text-center shadow-sm">
+          <p className="text-xs tracking-[0.3em] uppercase text-gold mb-4">CMS</p>
+          <h1 className="font-serif text-2xl font-bold text-ink mb-2">Wandering & Working</h1>
+          <p className="text-sm text-muted mb-8">Sign in to manage your posts.</p>
           {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
           <button
             onClick={handleGoogleLogin}
             disabled={signingIn}
-            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-[#e8e3d8] rounded-xl text-sm font-medium text-[#1c1a16] hover:border-[#1c1a16] hover:bg-[#faf9f6] disabled:opacity-50 transition-colors"
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-border rounded-xl text-sm font-medium text-ink hover:border-ink hover:bg-bg disabled:opacity-50 transition-colors"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Wandering & Working
 
-## Getting Started
+A travel blog documenting two years of living and working remotely — deep-dives into cities
+actually lived in, not just visited. Next.js 16 App Router frontend with a Firebase-backed
+CMS at `/admin`.
 
-First, run the development server:
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Requires a `.env.local` with the Firebase web config (gitignored, never commit it):
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Values come from Firebase Console → Project Settings → Your apps.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Does |
+|---|---|
+| `npm run dev` | Dev server on http://localhost:3000 (Turbopack) |
+| `npm run build` | Production build |
+| `npm start` | Serve a production build |
+| `npm run lint` | ESLint — should be zero errors |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Next.js 16 (App Router) · TypeScript · Tailwind CSS v4 · TipTap (rich text) · GSAP +
+ScrollTrigger · Firebase (Firestore, Auth, Storage) · deployed to Netlify via
+`@netlify/plugin-nextjs`.
 
-## Deploy on Vercel
+## Writing posts
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Go to `/admin` and sign in with Google. The dashboard lists published posts and drafts; the
+editor handles cover images, inline image/video uploads to Firebase Storage, tags, and a
+publish toggle. Drafts are visible only in `/admin` — public routes 404 on an unpublished slug.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Public pages are ISR with a 60s revalidate, so a newly published post appears within a minute
+without a rebuild.
+
+## Firebase
+
+```bash
+firebase deploy --only firestore:rules,firestore:indexes,storage
+```
+
+Read `CLAUDE.md` before changing `firestore.rules` — public reads are scoped to published
+posts, and Firestore *rejects* rather than filters queries that don't carry a matching
+`where("published", "==", true)`. That section explains the constraint and which queries
+depend on it.
+
+`functions/` is the untouched Firebase template; nothing is deployed from it.
+
+## Architecture notes
+
+`CLAUDE.md` is the real documentation — data model, route table, admin flow, editor internals,
+animation conventions, and the deployment checklist.

@@ -16,6 +16,8 @@ export default function FadeUp({ children, className = "", delay = 0, y = 32 }: 
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         ref.current,

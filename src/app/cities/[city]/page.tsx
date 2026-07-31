@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getAllPosts, getPostsByCity } from "@/lib/posts";
+import { citySlug } from "@/lib/utils";
 import PostCard from "@/components/PostCard";
+import PageHeader from "@/components/PageHeader";
 
 export const revalidate = 60;
 
@@ -9,7 +11,7 @@ export async function generateStaticParams() {
   try {
     const posts = await getAllPosts(true);
     const cities = [...new Set(posts.map((p) => p.city))];
-    return cities.map((city) => ({ city: city.toLowerCase().replace(/\s+/g, "-") }));
+    return cities.map((city) => ({ city: citySlug(city) }));
   } catch {
     return [];
   }
@@ -25,13 +27,11 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
 }
 
 export default async function CityPage({ params }: { params: Promise<{ city: string }> }) {
-  const { city: citySlug } = await params;
-  const label = citySlug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  // Named `slug`, not `citySlug` — that would shadow the imported helper.
+  const { city: slug } = await params;
 
   const allPosts = await getAllPosts(true).catch(() => []);
-  const matchingCity = allPosts.find(
-    (p) => p.city.toLowerCase().replace(/\s+/g, "-") === citySlug
-  )?.city;
+  const matchingCity = allPosts.find((p) => citySlug(p.city) === slug)?.city;
 
   if (!matchingCity) notFound();
 
@@ -39,15 +39,16 @@ export default async function CityPage({ params }: { params: Promise<{ city: str
 
   return (
     <div className="max-w-6xl mx-auto px-5 sm:px-8 py-16">
-      <div className="border-b border-[#e8e3d8] pb-10 mb-12">
-        {posts[0]?.country && (
-          <p className="text-xs tracking-[0.3em] uppercase text-[#8b6835] mb-4">{posts[0].country}</p>
-        )}
-        <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#1c1a16]">{label}</h1>
-        <p className="text-[#8a8074] mt-3">{posts.length} post{posts.length !== 1 ? "s" : ""}</p>
-      </div>
+      {/* matchingCity is the name as stored on the post. The slug-derived
+          title-case version this used to show disagreed with /cities for any
+          city not entered in Title Case, and mangled acronyms. */}
+      <PageHeader
+        eyebrow={posts[0]?.country}
+        title={matchingCity}
+        subtitle={`${posts.length} post${posts.length !== 1 ? "s" : ""}`}
+      />
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12 lg:gap-y-14">
         {posts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}

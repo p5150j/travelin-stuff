@@ -6,13 +6,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify:editor": "node --experimental-strip-types --import ./scripts/register-loader.mjs scripts/verify-editor.ts"
   },
   "dependencies": {
-    "@firebase/firestore": "^4.15.0",
     "@tiptap/extension-image": "^3.26.0",
     "@tiptap/extension-link": "^3.26.0",
     "@tiptap/extension-placeholder": "^3.26.0",
+    "@tiptap/extension-table": "^3.26.0",
     "@tiptap/extension-text-align": "^3.26.0",
     "@tiptap/extension-underline": "^3.26.0",
     "@tiptap/react": "^3.26.0",

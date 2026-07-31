@@ -14,6 +14,8 @@ export default function AnimatedPostGrid({ children, className = "" }: Props) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const ctx = gsap.context(() => {
       const cards = ref.current?.querySelectorAll("article");
       if (!cards?.length) return;

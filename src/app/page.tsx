@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { getAllPosts, getCities } from "@/lib/posts";
+import { citySlug } from "@/lib/utils";
 import HeroSection from "@/components/HeroSection";
-import AnimatedPostGrid from "@/components/AnimatedPostGrid";
-import PostCard from "@/components/PostCard";
+import PostGrid from "@/components/PostGrid";
 import FadeUp from "@/components/FadeUp";
 
 export const revalidate = 60;
@@ -12,10 +12,6 @@ export default async function HomePage() {
     getAllPosts(true).catch(() => []),
     getCities().catch(() => []),
   ]);
-
-  const [hero, ...rest] = posts;
-  const secondary = rest.slice(0, 2);
-  const remaining = rest.slice(2, 8);
 
   return (
     <div className="max-w-6xl mx-auto px-5 sm:px-8">
@@ -27,48 +23,33 @@ export default async function HomePage() {
 
       {posts.length > 0 && (
         <section className="py-16">
-          <FadeUp className="flex items-baseline justify-between mb-8">
-            <h2 className="font-serif text-xl text-[#1c1a16] font-bold">Latest</h2>
-            <Link href="/blog" className="text-xs tracking-widest uppercase text-[#8a8074] hover:text-[#8b6835] transition-colors">
+          {/* Section heads are tiny labels, not mid-size serif. The post titles
+              are the large type on the page — two competing sizes flattened the
+              hierarchy and made the whole thing read as unfinished. */}
+          <FadeUp className="flex items-baseline justify-between mb-8 pb-4 border-b border-border">
+            <h2 className="label">Latest</h2>
+            <Link href="/blog" className="meta hover:text-gold transition-colors">
               All Posts →
             </Link>
           </FadeUp>
 
-          <AnimatedPostGrid>
-            {hero && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-                <div className="lg:col-span-2">
-                  <PostCard post={hero} large />
-                </div>
-                <div className="flex flex-col gap-4">
-                  {secondary.map((post) => (
-                    <PostCard key={post.id} post={post} />
-                  ))}
-                </div>
-              </div>
-            )}
-            {remaining.length > 0 && (
-              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {remaining.map((post) => (
-                  <PostCard key={post.id} post={post} />
-                ))}
-              </div>
-            )}
-          </AnimatedPostGrid>
+          {/* 9 = one lead + two beside it + a row of six. /blog renders the
+              same layout unbounded. */}
+          <PostGrid posts={posts} max={9} />
         </section>
       )}
 
       {posts.length === 0 && (
-        <section className="py-32 text-center text-[#8a8074]">
+        <section className="py-32 text-center text-muted">
           <p className="text-lg">Posts coming soon — the journey is getting documented.</p>
         </section>
       )}
 
       {cities.length > 0 && (
-        <section className="py-16 border-t border-[#e8e3d8]">
-          <FadeUp className="flex items-baseline justify-between mb-8">
-            <h2 className="font-serif text-xl text-[#1c1a16] font-bold">Cities</h2>
-            <Link href="/cities" className="text-xs tracking-widest uppercase text-[#8a8074] hover:text-[#8b6835] transition-colors">
+        <section className="py-16 border-t border-border">
+          <FadeUp className="flex items-baseline justify-between mb-8 pb-4 border-b border-border">
+            <h2 className="label">Cities</h2>
+            <Link href="/cities" className="meta hover:text-gold transition-colors">
               All Cities →
             </Link>
           </FadeUp>
@@ -76,13 +57,13 @@ export default async function HomePage() {
             {cities.map(({ city, country, count }) => (
               <Link
                 key={city}
-                href={`/cities/${encodeURIComponent(city.toLowerCase().replace(/\s+/g, "-"))}`}
-                className="group flex items-center gap-2 px-4 py-2 border border-[#e8e3d8] rounded-full text-sm bg-white hover:border-[#1c1a16] transition-colors"
+                href={`/cities/${encodeURIComponent(citySlug(city))}`}
+                className="group inline-flex items-center gap-2 min-h-11 px-4 border border-border rounded-full text-sm bg-surface hover:border-ink transition-colors"
               >
-                <span className="text-[#1c1a16] font-medium">{city}</span>
-                <span className="text-[#8a8074] text-xs">{country}</span>
-                <span className="text-[#e8e3d8] text-xs">·</span>
-                <span className="text-[#8a8074] text-xs">{count}</span>
+                <span className="text-ink font-medium">{city}</span>
+                <span className="text-muted text-xs">{country}</span>
+                <span className="text-faint text-xs" aria-hidden>·</span>
+                <span className="text-muted text-xs tabular-nums">{count}</span>
               </Link>
             ))}
           </FadeUp>

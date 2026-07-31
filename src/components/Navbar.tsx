@@ -7,11 +7,14 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
 
+  // onClick closes the mobile drawer — without it the menu stayed open behind
+  // the new page after navigating.
   const link = (href: string, label: string) => (
     <Link
       href={href}
+      onClick={() => setOpen(false)}
       className={`text-sm tracking-wide transition-colors ${
-        pathname === href ? "text-[#1c1a16]" : "text-[#8a8074] hover:text-[#1c1a16]"
+        pathname === href ? "text-ink" : "text-muted hover:text-ink"
       }`}
     >
       {label}
@@ -19,9 +22,9 @@ export default function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#e8e3d8] bg-[#faf9f6]/90 backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur-md">
       <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="font-serif text-lg font-bold text-[#1c1a16] hover:text-[#8b6835] transition-colors tracking-wide">
+        <Link href="/" className="font-serif text-lg font-bold text-ink hover:text-gold transition-colors tracking-wide">
           Wandering & Working
         </Link>
 
@@ -32,7 +35,7 @@ export default function Navbar() {
         </div>
 
         <button
-          className="sm:hidden p-2 text-[#8a8074] hover:text-[#1c1a16]"
+          className="sm:hidden p-2 text-muted hover:text-ink"
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
         >
@@ -46,7 +49,7 @@ export default function Navbar() {
       </nav>
 
       {open && (
-        <div className="sm:hidden border-t border-[#e8e3d8] bg-[#faf9f6] px-5 py-4 flex flex-col gap-4">
+        <div className="sm:hidden border-t border-border bg-bg px-5 py-4 flex flex-col gap-4">
           {link("/blog", "Posts")}
           {link("/cities", "Cities")}
           {link("/about", "About")}

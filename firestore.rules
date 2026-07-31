@@ -3,9 +3,17 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /posts/{postId} {
-      // Anyone can read published posts (public blog)
-      allow read: if true;
-      // Only authenticated users (Patrick) can create/edit/delete
+      // Public blog: anyone can read a PUBLISHED post. Drafts require auth so
+      // they aren't readable via the SDK with the (public) web API key.
+      //
+      // Rules do NOT filter query results — they REJECT any query they can't
+      // prove stays inside the rule. So every unauthenticated query in
+      // src/lib/posts.ts must carry where("published", "==", true) or it fails
+      // outright. Filtering in JS after the fetch is not equivalent.
+      allow read: if resource.data.published == true || request.auth != null;
+
+      // TODO: any Google account can currently sign in and write. Lock this to
+      // a single uid: request.auth != null && request.auth.uid == "<your-uid>"
       allow write: if request.auth != null;
     }
   }
