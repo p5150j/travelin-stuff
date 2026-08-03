@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About",
   description: "Two years, dozens of cities, one laptop. A little about who's behind this blog.",
+  alternates: { canonical: "/about" },
+  openGraph: { url: "/about", images: ["/opengraph-image"] },
 };
 
 export default function AboutPage() {

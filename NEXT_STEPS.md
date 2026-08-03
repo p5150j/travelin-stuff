@@ -43,16 +43,17 @@ Worth walking through:
 - [ ] City **suggestion chips** appear; typing `vegas` when `Vegas` exists shows
       the case-clash warning and the "Use" button works.
 
-### 3. Lock down writes — needs your Firebase Auth UID
+### 3. Lock down writes — LIVE HOLE, needs your Firebase Auth UID
+
+**The site is live at https://workandwander.netlify.app and auto-deploys on push
+to main.** That makes this the most urgent item, not a pre-launch one.
 
 Both `firestore.rules` and `storage.rules` still say `allow write: if request.auth != null`.
-With Google Sign-In enabled that means **any Google account** can sign in and
-create, edit, or delete posts. There's a `TODO` in `firestore.rules`.
-
-Not urgent while nothing is deployed — the config isn't public yet, so nobody has
-it. **It becomes urgent the moment the site goes live**, because
-`NEXT_PUBLIC_*` vars ship in the client bundle by design, so anyone can pull them
-out of the JS and write to Firestore directly without ever finding `/admin`.
+`NEXT_PUBLIC_*` vars ship in the client bundle by design, so anyone can read the
+Firebase config out of the published JS and write to Firestore directly — they
+never need to find `/admin`. With Google Sign-In enabled, **any Google account
+can create, edit, or delete every post right now.** There's a `TODO` in
+`firestore.rules`.
 
 Get the UID from Firebase Console → Authentication → Users, then in both files:
 
@@ -64,14 +65,22 @@ Also gate `/admin` on the same uid rather than merely on a user being present,
 and add a size cap to `storage.rules` (uploads are currently unbounded, and video
 is allowed).
 
-### 4. Pre-launch placeholders
+### 4. Remaining setup
 
-- [ ] `yourdomain.com` → real domain in `src/app/layout.tsx`, `src/app/sitemap.ts`,
-      `public/robots.txt`
-- [ ] `public/og-default.jpg` (1200×630) — **does not exist**, so every OG card
-      currently 404s
-- [ ] Netlify env vars, and add the Netlify domain to Firebase → Authentication →
-      Authorized Domains
+- [ ] Add `workandwander.netlify.app` to Firebase Console → Authentication →
+      Authorized Domains, or Google Sign-In on `/admin` will fail in production
+- [ ] Set `NEXT_PUBLIC_SITE_URL` in Netlify **only** when a custom domain
+      replaces the `.netlify.app` address — until then `src/lib/site.ts` picks up
+      Netlify's build-time `URL` automatically
+
+*Done:* the `yourdomain.com` placeholders are gone (all absolute URLs now come
+from `src/lib/site.ts`), and the missing `og-default.jpg` is replaced by a
+generated card at `src/app/opengraph-image.tsx`.
+
+**Known cosmetic gap:** that generated OG card renders in satori's default
+sans, not Fraunces. Fixing it means fetching a TTF at build time (satori can't
+read WOFF2), which adds a network dependency to the build — deliberately left
+alone.
 
 ---
 

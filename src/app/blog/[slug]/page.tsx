@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPostBySlug, getAllPosts } from "@/lib/posts";
-import { citySlug, formatDate } from "@/lib/utils";
+import { citySlug, formatDate, truncate } from "@/lib/utils";
+import { siteUrl, siteName } from "@/lib/site";
 import FadeUp from "@/components/FadeUp";
 import PostByline from "@/components/PostByline";
 
@@ -22,21 +23,33 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return {};
+  // Meta descriptions get cut around 160 chars; excerpt has no length cap.
+  const description = truncate(post.excerpt, 155);
+
   return {
     title: post.title,
-    description: post.excerpt,
+    description,
+    alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       title: post.title,
-      description: post.excerpt,
+      description,
       type: "article",
+      url: `/blog/${post.slug}`,
       publishedTime: post.publishedAt?.toDate().toISOString(),
-      images: post.coverImage ? [{ url: post.coverImage, width: 1200, height: 630 }] : [],
+      modifiedTime: post.updatedAt?.toDate().toISOString(),
+      authors: ["Patrick"],
+      tags: post.tags,
+      /* No width/height — the previous 1200×630 was asserted about whatever
+         cover happened to be uploaded, and wrong dimensions crop badly. Omitting
+         them lets the platform read the real ones. Falls through to the
+         generated site card when a post has no cover. */
+      ...(post.coverImage ? { images: [{ url: post.coverImage, alt: post.title }] } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
-      description: post.excerpt,
-      images: post.coverImage ? [post.coverImage] : [],
+      description,
+      ...(post.coverImage ? { images: [post.coverImage] } : {}),
     },
   };
 }
@@ -46,8 +59,34 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  /* BlogPosting structured data — what earns rich results in search. Every field
+     already exists on the post; nothing here is invented. Emitted as a plain
+     <script> because JSON-LD isn't part of the Metadata API. */
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt?.toDate().toISOString(),
+    dateModified: post.updatedAt?.toDate().toISOString() ?? post.publishedAt?.toDate().toISOString(),
+    author: { "@type": "Person", name: "Patrick" },
+    publisher: { "@type": "Organization", name: siteName },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `${siteUrl}/blog/${post.slug}` },
+    url: `${siteUrl}/blog/${post.slug}`,
+    ...(post.coverImage ? { image: [post.coverImage] } : {}),
+    ...(post.tags.length ? { keywords: post.tags.join(", ") } : {}),
+    ...(post.city ? { contentLocation: { "@type": "Place", name: post.city } } : {}),
+  };
+
   return (
     <article>
+      <script
+        type="application/ld+json"
+        // Serialised via JSON.stringify, so the only injection surface is the
+        // post's own fields — same trust boundary as the body content.
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Cover hero uses 62svh on mobile: svh excludes the collapsing browser
           chrome, so it doesn't jump as the URL bar hides on scroll. */}
       {post.coverImage ? (

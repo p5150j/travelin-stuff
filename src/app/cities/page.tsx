@@ -11,6 +11,8 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "Cities",
   description: "Every city I've lived and worked from, in the order I lived them.",
+  alternates: { canonical: "/cities" },
+  openGraph: { url: "/cities", images: ["/opengraph-image"] },
 };
 
 export default async function CitiesPage() {

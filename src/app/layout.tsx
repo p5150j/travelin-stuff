@@ -3,6 +3,7 @@ import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { siteUrl, siteName } from "@/lib/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
@@ -17,29 +18,30 @@ const serif = Fraunces({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://yourdomain.com"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Wandering & Working | A Remote Work Travel Blog",
-    template: "%s | Wandering & Working",
+    default: `${siteName} | A Remote Work Travel Blog`,
+    template: `%s | ${siteName}`,
   },
   description:
     "Two years of living and working remotely across the world — honest deep-dives into every city, neighborhood, and coffee shop that became home.",
   keywords: ["remote work", "digital nomad", "travel blog", "living abroad", "slow travel"],
   authors: [{ name: "Patrick" }],
+  alternates: { canonical: "/" },
+  /* No `title`/`description` here on purpose. openGraph merges shallowly, so an
+     explicit title at the root was inherited by every child page — /blog,
+     /cities, /about and /cities/[city] all shared one og:title even though their
+     <title> was correct. Omitting them lets Next derive og:* from each page's own
+     title and description. Same for `images`: the opengraph-image.tsx file
+     convention supplies the default card, and posts override it with their cover. */
   openGraph: {
     type: "website",
     locale: "en_US",
-    siteName: "Wandering & Working",
-    title: "Wandering & Working | A Remote Work Travel Blog",
-    description:
-      "Two years of living and working remotely across the world — honest deep-dives into every city.",
-    images: [{ url: "/og-default.jpg", width: 1200, height: 630, alt: "Wandering & Working" }],
+    siteName,
+    url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wandering & Working",
-    description: "Two years of living and working remotely across the world.",
-    images: ["/og-default.jpg"],
   },
   robots: {
     index: true,

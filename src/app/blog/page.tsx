@@ -8,6 +8,10 @@ export const revalidate = 60;
 export const metadata: Metadata = {
   title: "All Posts",
   description: "Every post from two years of living and working remotely across the world.",
+  alternates: { canonical: "/blog" },
+  // Both fields needed: setting openGraph at all replaces the inherited object,
+  // so omitting `images` drops the default card and omitting `url` inherits "/".
+  openGraph: { url: "/blog", images: ["/opengraph-image"] },
   robots: { index: true, follow: true },
 };
 

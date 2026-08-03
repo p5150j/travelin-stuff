@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getAllPosts, getPostsByCity } from "@/lib/posts";
+import { getAllPosts, getPostsByCity, getCities } from "@/lib/posts";
 import { citySlug } from "@/lib/utils";
 import PostCard from "@/components/PostCard";
 import PageHeader from "@/components/PageHeader";
@@ -18,11 +18,27 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ city: string }> }): Promise<Metadata> {
-  const { city } = await params;
-  const label = city.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const { city: slug } = await params;
+
+  // Prefer the stored city name and its cover photo over anything derived from
+  // the slug — the entry already carries both. Falls back to a title-cased slug
+  // so metadata still renders if Firestore is unreachable.
+  const entry = (await getCities().catch(() => [])).find((c) => citySlug(c.city) === slug);
+  const label = entry?.city ?? slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const description = `All posts from my time living and working in ${label}.`;
+
   return {
     title: label,
-    description: `All posts from my time living and working in ${label}.`,
+    description,
+    alternates: { canonical: `/cities/${slug}` },
+    openGraph: {
+      type: "website",
+      url: `/cities/${slug}`,
+      // City cover rather than the generic site card. No width/height: these are
+      // whatever was uploaded, and declaring dimensions we haven't measured is
+      // worse than letting the platform read them.
+      ...(entry?.coverImage ? { images: [{ url: entry.coverImage, alt: label }] } : {}),
+    },
   };
 }
 

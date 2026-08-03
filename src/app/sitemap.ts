@@ -1,9 +1,10 @@
 import { MetadataRoute } from "next";
 import { getAllPosts, getCities } from "@/lib/posts";
 import { citySlug } from "@/lib/utils";
+import { siteUrl } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = "https://yourdomain.com";
+  const base = siteUrl;
 
   const posts = await getAllPosts(true).catch(() => []);
   const cities = await getCities().catch(() => []);

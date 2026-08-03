@@ -397,6 +397,8 @@ src/
 │   ├── layout.tsx              # Root layout — Navbar, Footer, global metadata + OG defaults
 │   ├── page.tsx                # Homepage — hero, latest 3 posts, city pills
 │   ├── globals.css             # Tailwind + .prose (public) + .prose-editor (TipTap) styles
+│   ├── opengraph-image.tsx     # Generated 1200x630 default OG card (next/og)
+│   ├── robots.ts               # robots.txt as a route, so it can read the deploy URL
 │   ├── sitemap.ts              # Auto sitemap from Firestore
 │   ├── blog/
 │   │   ├── page.tsx            # All published posts grid
@@ -432,6 +434,7 @@ src/
 └── lib/
     ├── firebase.ts             # Firebase init (singleton via getApps())
     ├── posts.ts                # Firestore CRUD + getCities/distinctCities
+    ├── site.ts                 # siteUrl + siteName — single source for absolute URLs
     ├── storage.ts              # Firebase Storage upload — uploadAsset(file, "images"|"videos", onProgress)
     └── utils.ts                # formatDate, formatDayMonth, formatDateRange, citySlug, slugify, truncate
 
@@ -506,11 +509,40 @@ service firebase.storage {
 
 ## SEO & Crawling
 
-- `/admin/*` and `/api/*` are `noindex` via Next.js metadata API and `netlify.toml` response headers
-- `robots.txt` blocks `/admin/` and `/api/` from all crawlers
-- Each post page generates its own `<title>`, `description`, `og:*`, and `twitter:*` tags via `generateMetadata()`
-- `sitemap.xml` is dynamically generated from all published posts + city pages
-- Replace `yourdomain.com` in `layout.tsx`, `sitemap.ts`, and `robots.txt` once domain is live
+**Origin comes from `src/lib/site.ts`, never a hardcoded domain.** Resolution:
+`NEXT_PUBLIC_SITE_URL` → `URL` (Netlify injects this at build) → `localhost:3000`.
+Live site: `https://workandwander.netlify.app`.
+
+| | |
+|---|---|
+| Rendering | Every public route is prerendered static HTML — body copy, `<h1>` and cover `<img>` are all in the markup pre-JS |
+| `og:image` | Posts and city pages use their own photo; everything else falls back to the generated card |
+| Default card | `src/app/opengraph-image.tsx` — generated 1200×630 PNG via `next/og`, so there's no binary to keep in sync with the palette |
+| Structured data | `BlogPosting` JSON-LD on post pages |
+| Canonicals | `alternates.canonical` on every page |
+| `robots.txt` | `src/app/robots.ts` (a route, so it can read the deploy URL) |
+| `sitemap.xml` | Generated from published posts + city pages |
+| `/admin/*`, `/api/*` | `noindex` via metadata API + `netlify.toml` headers |
+
+### The openGraph shallow-merge trap
+
+**`openGraph` does not deep-merge with the parent.** A child page that sets *any*
+`openGraph` field replaces the whole inherited object.
+
+This bit twice. The root originally set `openGraph.title`, so `/blog`, `/cities`,
+`/about` and `/cities/[city]` all emitted the generic site title as `og:title`
+even though their `<title>` was right. Removing it fixed those — but then adding
+`openGraph: { url }` to the same pages dropped their `og:image`.
+
+Rules that follow:
+- The **root** sets only `type`, `locale`, `siteName`, `url` — never `title`,
+  `description`, or `images`, so children inherit sensibly and Next derives
+  `og:title`/`og:description` from each page's own `title`/`description`.
+- A child that sets `openGraph` must set **both** `url` *and* `images`.
+
+Re-audit emitted tags by reading the prerendered HTML in
+`.next/server/app/**.html` after a build — that's the only way to see what
+actually ships, rather than what the source appears to say.
 
 ---
 
@@ -522,8 +554,10 @@ service firebase.storage {
 
 - [x] Firebase CLI initialized (`firebase init firestore`)
 - [x] Firestore indexes deployed (`firebase deploy --only firestore:indexes`)
-- [ ] Add all `NEXT_PUBLIC_FIREBASE_*` vars to Netlify environment variables
+- [x] Connect GitHub repo in Netlify → **live at https://workandwander.netlify.app, auto-deploys on push to main**
+- [x] Absolute URLs read from `src/lib/site.ts` (no hardcoded domain anywhere)
+- [x] Default OG card generated at `src/app/opengraph-image.tsx`
 - [ ] Add Netlify domain to Firebase Console → Authentication → Authorized Domains
-- [ ] Replace `yourdomain.com` in `src/app/layout.tsx`, `src/app/sitemap.ts`, `public/robots.txt`
-- [ ] Add OG default image at `public/og-default.jpg` (1200×630)
-- [ ] Connect GitHub repo in Netlify dashboard → auto-deploys on push to main
+- [ ] **Lock writes to a single uid** in `firestore.rules` + `storage.rules` — see `NEXT_STEPS.md`
+- [ ] Deploy the tightened Firestore rules (`firebase deploy --only firestore:rules,firestore:indexes`)
+- [ ] Set `NEXT_PUBLIC_SITE_URL` in Netlify once a custom domain replaces the `.netlify.app` address
