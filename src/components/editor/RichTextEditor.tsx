@@ -34,9 +34,11 @@ export default function RichTextEditor({ value, onChange }: Props) {
   if (!editor) return null;
 
   return (
-    <div className="border border-stone-300 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-orange-400">
+    // No overflow-hidden here — it would break the toolbar's position:sticky.
+    // Rounding lives on the children instead.
+    <div className="border border-stone-300 rounded-xl focus-within:ring-2 focus-within:ring-orange-400">
+      <EditorContent editor={editor} className="rounded-t-xl overflow-hidden" />
       <EditorToolbar editor={editor} />
-      <EditorContent editor={editor} />
     </div>
   );
 }

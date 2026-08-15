@@ -80,7 +80,12 @@ export default function EditorToolbar({ editor }: Props) {
   const divider = <div className="w-px h-5 bg-stone-200 mx-1" />;
 
   return (
-    <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 bg-stone-50 border-b border-stone-200 sticky top-16 z-20">
+    // Sticky to the BOTTOM of the viewport: on a long post the cursor is in the
+    // middle of the screen and the top of the editor is hundreds of pixels away,
+    // so a top toolbar meant scrolling away from what you'd just selected. The
+    // bar rides the viewport bottom while any part of the editor is in view and
+    // settles at the editor's end, so it never covers the fields below the form.
+    <div className="flex flex-wrap items-center gap-0.5 px-3 py-2 bg-stone-50 border-t border-stone-200 rounded-b-xl sticky bottom-0 z-20">
       {/* Headings */}
       <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={btn(editor.isActive("heading", { level: 1 }))} title="Heading 1">H1</button>
       <button type="button" onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={btn(editor.isActive("heading", { level: 2 }))} title="Heading 2">H2</button>
