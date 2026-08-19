@@ -67,9 +67,8 @@ is allowed).
 
 ### 4. Remaining setup
 
-- [ ] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console →
-      Authentication → Authorized Domains, or Google Sign-In on `/admin` will fail
-      in production
+- [x] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console →
+      Authentication → Authorized Domains — both are authorized
 - [x] Set `NEXT_PUBLIC_SITE_URL` — done via `netlify.toml`
       `[context.production.environment]`, pointing at `https://travel.arus.io`.
       Deploy previews still pick up Netlify's build-time `URL` automatically.

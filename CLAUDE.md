@@ -558,7 +558,7 @@ actually ships, rather than what the source appears to say.
 - [x] Connect GitHub repo in Netlify → **live at https://workandwander.netlify.app, auto-deploys on push to main**
 - [x] Absolute URLs read from `src/lib/site.ts` (no hardcoded domain anywhere)
 - [x] Default OG card generated at `src/app/opengraph-image.tsx`
-- [ ] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console → Authentication → Authorized Domains
+- [x] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console → Authentication → Authorized Domains
 - [ ] **Lock writes to a single uid** in `firestore.rules` + `storage.rules` — see `NEXT_STEPS.md`
 - [ ] Deploy the tightened Firestore rules (`firebase deploy --only firestore:rules,firestore:indexes`)
 - [x] Set `NEXT_PUBLIC_SITE_URL` — `https://travel.arus.io` in `netlify.toml` `[context.production.environment]`
