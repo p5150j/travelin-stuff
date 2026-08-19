@@ -5,6 +5,11 @@
 [build.environment]
   NODE_VERSION = "20"
 
+# Canonical origin for metadata/OG/sitemap/robots (src/lib/site.ts).
+# Production only — deploy previews keep their own URL via Netlify's `URL` var.
+[context.production.environment]
+  NEXT_PUBLIC_SITE_URL = "https://travel.arus.io"
+
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 

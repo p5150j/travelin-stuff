@@ -45,8 +45,8 @@ Worth walking through:
 
 ### 3. Lock down writes — LIVE HOLE, needs your Firebase Auth UID
 
-**The site is live at https://workandwander.netlify.app and auto-deploys on push
-to main.** That makes this the most urgent item, not a pre-launch one.
+**The site is live at https://travel.arus.io (Netlify address:
+workandwander.netlify.app) and auto-deploys on push to main.** That makes this the most urgent item, not a pre-launch one.
 
 Both `firestore.rules` and `storage.rules` still say `allow write: if request.auth != null`.
 `NEXT_PUBLIC_*` vars ship in the client bundle by design, so anyone can read the
@@ -67,11 +67,12 @@ is allowed).
 
 ### 4. Remaining setup
 
-- [ ] Add `workandwander.netlify.app` to Firebase Console → Authentication →
-      Authorized Domains, or Google Sign-In on `/admin` will fail in production
-- [ ] Set `NEXT_PUBLIC_SITE_URL` in Netlify **only** when a custom domain
-      replaces the `.netlify.app` address — until then `src/lib/site.ts` picks up
-      Netlify's build-time `URL` automatically
+- [ ] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console →
+      Authentication → Authorized Domains, or Google Sign-In on `/admin` will fail
+      in production
+- [x] Set `NEXT_PUBLIC_SITE_URL` — done via `netlify.toml`
+      `[context.production.environment]`, pointing at `https://travel.arus.io`.
+      Deploy previews still pick up Netlify's build-time `URL` automatically.
 
 *Done:* the `yourdomain.com` placeholders are gone (all absolute URLs now come
 from `src/lib/site.ts`), and the missing `og-default.jpg` is replaced by a

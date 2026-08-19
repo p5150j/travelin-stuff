@@ -511,7 +511,8 @@ service firebase.storage {
 
 **Origin comes from `src/lib/site.ts`, never a hardcoded domain.** Resolution:
 `NEXT_PUBLIC_SITE_URL` → `URL` (Netlify injects this at build) → `localhost:3000`.
-Live site: `https://workandwander.netlify.app`.
+Live site: `https://travel.arus.io` (set as `NEXT_PUBLIC_SITE_URL` for production
+builds in `netlify.toml`; `workandwander.netlify.app` is the underlying Netlify address).
 
 | | |
 |---|---|
@@ -557,7 +558,7 @@ actually ships, rather than what the source appears to say.
 - [x] Connect GitHub repo in Netlify → **live at https://workandwander.netlify.app, auto-deploys on push to main**
 - [x] Absolute URLs read from `src/lib/site.ts` (no hardcoded domain anywhere)
 - [x] Default OG card generated at `src/app/opengraph-image.tsx`
-- [ ] Add Netlify domain to Firebase Console → Authentication → Authorized Domains
+- [ ] Add `travel.arus.io` (and `workandwander.netlify.app`) to Firebase Console → Authentication → Authorized Domains
 - [ ] **Lock writes to a single uid** in `firestore.rules` + `storage.rules` — see `NEXT_STEPS.md`
 - [ ] Deploy the tightened Firestore rules (`firebase deploy --only firestore:rules,firestore:indexes`)
-- [ ] Set `NEXT_PUBLIC_SITE_URL` in Netlify once a custom domain replaces the `.netlify.app` address
+- [x] Set `NEXT_PUBLIC_SITE_URL` — `https://travel.arus.io` in `netlify.toml` `[context.production.environment]`
