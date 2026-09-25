@@ -58,7 +58,7 @@ export default async function HomePage() {
               <Link
                 key={city}
                 href={`/cities/${encodeURIComponent(citySlug(city))}`}
-                className="group inline-flex items-center gap-2 min-h-11 px-4 border border-border rounded-full text-sm bg-surface hover:border-yellow hover:bg-yellow transition-colors"
+                className="group inline-flex items-center gap-2 min-h-11 px-4 border border-border text-sm bg-surface hover:border-yellow hover:bg-yellow transition-colors"
               >
                 {/* Every span flips to ink on the yellow hover fill. */}
                 <span className="text-ink font-medium group-hover:text-bg transition-colors">{city}</span>

@@ -118,7 +118,7 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         {post.tags.length > 0 && (
           <FadeUp delay={0.1} className="mt-12 pt-8 border-t border-border flex flex-wrap gap-2">
             {[...new Set(post.tags)].map((tag, i) => (
-              <span key={`${tag}-${i}`} className="text-xs px-3 py-1 border border-border text-muted rounded-full">
+              <span key={`${tag}-${i}`} className="text-xs px-3 py-1 border border-border text-muted">
                 {tag}
               </span>
             ))}

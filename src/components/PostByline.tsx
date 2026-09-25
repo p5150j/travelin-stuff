@@ -22,7 +22,7 @@ export default function PostByline({ city }: Props) {
     <div className="mt-12 pt-8 border-t border-border flex items-start gap-4">
       <span
         aria-hidden
-        className="shrink-0 w-12 h-12 rounded-full bg-yellow text-bg font-serif font-bold text-lg flex items-center justify-center"
+        className="shrink-0 w-12 h-12 bg-yellow text-bg font-serif font-bold text-lg flex items-center justify-center"
       >
         P
       </span>

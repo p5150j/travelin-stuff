@@ -47,7 +47,7 @@ export default function ArchiveList({ posts }: Props) {
             <a
               key={year ?? "undated"}
               href={`#year-${year ?? "undated"}`}
-              className="inline-flex items-center gap-1.5 min-h-9 px-3 border border-border rounded-full text-sm text-ink hover:border-ink transition-colors"
+              className="inline-flex items-center gap-1.5 min-h-9 px-3 border border-border text-sm text-ink hover:border-ink transition-colors"
             >
               <span className="tabular-nums">{year ?? "Undated"}</span>
               <span className="text-faint text-xs tabular-nums">{yearPosts.length}</span>

@@ -98,13 +98,13 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
               size stable through the swap. */}
           <Link
             href="/blog"
-            className="inline-flex items-center min-h-12 px-7 border border-yellow bg-yellow text-bg text-sm font-medium tracking-wide hover:bg-transparent hover:text-ink transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 border border-yellow bg-yellow text-bg text-sm font-medium tracking-wide hover:bg-transparent hover:text-ink transition-colors"
           >
             Read All Posts
           </Link>
           <Link
             href="/cities"
-            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-yellow hover:bg-yellow hover:text-bg transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-yellow hover:bg-yellow hover:text-bg transition-colors"
           >
             Browse Cities
           </Link>
