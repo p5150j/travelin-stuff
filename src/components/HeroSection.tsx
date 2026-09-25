@@ -68,9 +68,22 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
             Wor<span className="inline-block origin-bottom-left rotate-[8deg] translate-y-[0.01em]">k</span>ing
           </span>
           {/* Yellow marker block carrying ink type — the inverted site's one
-              solid-fill moment, mirroring the arus hero's mass of ink. */}
+              solid-fill moment, mirroring the arus hero's mass of ink. The
+              gradient leaves the top 0.14em of the block transparent so the
+              yellow g descender from "Working" above shows against the dark
+              ground instead of vanishing into the yellow. Em-based, so it
+              holds across the responsive type sizes; the block's own caps sit
+              below that strip. */}
           <span ref={h1cRef} className="block">
-            <span className="bg-yellow text-bg box-decoration-clone px-3 -mx-3">&amp; Wandering.</span>
+            <span
+              className="text-bg box-decoration-clone px-3 -mx-3"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to bottom, transparent 0.14em, var(--yellow) 0.14em)",
+              }}
+            >
+              &amp; Wandering.
+            </span>
           </span>
         </h1>
 
