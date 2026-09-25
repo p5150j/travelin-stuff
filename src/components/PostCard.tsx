@@ -70,9 +70,9 @@ export default function PostCard({ post, large = false }: Props) {
               : "text-[1.625rem] sm:text-[1.75rem] leading-[1.15]"
           }`}
         >
-          {/* Yellow marker highlight on hover, cloned per wrapped line —
-              replaces the old gold text-tint. */}
-          <span className="box-decoration-clone group-hover:bg-yellow transition-colors">
+          {/* Yellow marker highlight with ink type on hover, cloned per
+              wrapped line. */}
+          <span className="box-decoration-clone group-hover:bg-yellow group-hover:text-bg transition-colors">
             {post.title}
           </span>
         </h2>

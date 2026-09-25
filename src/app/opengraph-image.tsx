@@ -27,7 +27,7 @@ export default function OpengraphImage() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          backgroundColor: "#faf9f6",
+          backgroundColor: "#111111",
           padding: "72px 80px",
         }}
       >
@@ -35,9 +35,9 @@ export default function OpengraphImage() {
           <div
             style={{
               fontSize: 20,
-              letterSpacing: "0.28em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
-              color: "#8b6835",
+              color: "#FDE102",
               fontWeight: 600,
             }}
           >
@@ -50,22 +50,32 @@ export default function OpengraphImage() {
             style={{
               fontSize: 104,
               lineHeight: 1.02,
-              letterSpacing: "-0.03em",
-              color: "#1c1a16",
-              fontWeight: 700,
+              letterSpacing: "-0.04em",
+              color: "#FDE102",
+              fontWeight: 800,
               display: "flex",
               flexDirection: "column",
             }}
           >
             <span>Living, Working</span>
-            <span>&amp; Wandering.</span>
+            <span
+              style={{
+                backgroundColor: "#FDE102",
+                color: "#111111",
+                padding: "0 16px",
+                marginLeft: -16,
+                alignSelf: "flex-start",
+              }}
+            >
+              &amp; Wandering.
+            </span>
           </div>
           <div
             style={{
               marginTop: 28,
               fontSize: 30,
               lineHeight: 1.4,
-              color: "#6f665a",
+              color: "#b3a83e",
               maxWidth: 760,
             }}
           >
@@ -78,10 +88,10 @@ export default function OpengraphImage() {
           style={{
             display: "flex",
             alignItems: "center",
-            borderTop: "1px solid #e8e3d8",
+            borderTop: "1px solid #FDE102",
             paddingTop: 28,
             fontSize: 24,
-            color: "#1c1a16",
+            color: "#FDE102",
             fontWeight: 600,
             letterSpacing: "-0.01em",
           }}

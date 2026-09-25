@@ -72,7 +72,7 @@ export default async function CitiesPage() {
                     </p>
 
                     <h2 className="font-serif text-[2.125rem] sm:text-[2.5rem] font-bold text-ink leading-[1.04] tracking-[-0.025em]">
-                      <span className="box-decoration-clone group-hover:bg-yellow transition-colors">
+                      <span className="box-decoration-clone group-hover:bg-yellow group-hover:text-bg transition-colors">
                         {entry.city}
                       </span>
                     </h2>

@@ -9,12 +9,13 @@ export default function Navbar() {
 
   // onClick closes the mobile drawer — without it the menu stayed open behind
   // the new page after navigating.
+  // Mono label links with underline hover — the arus header language.
   const link = (href: string, label: string) => (
     <Link
       href={href}
       onClick={() => setOpen(false)}
-      className={`text-sm tracking-wide transition-colors ${
-        pathname === href ? "text-ink" : "text-muted hover:text-ink"
+      className={`label transition-colors hover:underline underline-offset-4 ${
+        pathname === href ? "underline underline-offset-4" : "text-muted hover:text-ink"
       }`}
     >
       {label}
@@ -22,9 +23,10 @@ export default function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur-md">
-      <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="font-serif text-lg font-bold text-ink hover:bg-yellow transition-colors tracking-wide px-1 -mx-1">
+    // Double rule top + hairline bottom, straight off the arus header.
+    <header className="sticky top-0 z-50 border-t-2 border-t-ink border-b border-border bg-bg/90 backdrop-blur-md">
+      <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-12 flex items-center justify-between">
+        <Link href="/" className="label hover:bg-yellow hover:text-bg transition-colors px-1 -mx-1">
           Wandering & Working
         </Link>
 

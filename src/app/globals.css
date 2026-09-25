@@ -4,34 +4,39 @@
    Every colour has one assigned role. Raw CSS reads these via var(--ink);
    Tailwind utilities come from the @theme block below (text-ink, border-border,
    bg-raised, …). Add a colour here and use the token — no inline hex. */
+/* The arus.io brand, inverted. arus is ink type on flat #FDE102; this site is
+   the negative — yellow type on flat #111. Token ROLES are unchanged (--ink is
+   still "primary text", --bg still "page ground"), only the values flipped, so
+   every component written against the roles inverts for free. */
 :root {
-  /* Grounds, lightest to darkest */
-  --bg:      #faf9f6;  /* page ground, warm off-white */
-  --surface: #fffefb;  /* raised cards — warm white; pure #fff read cold here */
-  --raised:  #f5f3ee;  /* image placeholders, inline code */
-  --border:  #e8e3d8;  /* hairlines and dividers */
+  /* Grounds, darkest to lightest */
+  --bg:      #111111;  /* page ground — arus ink, now the paper */
+  --surface: #1a1913;  /* raised cards, barely lifted off the ground */
+  --raised:  #242215;  /* image placeholders, inline code */
+  --border:  rgba(253, 225, 2, 0.4);  /* minor rules — arus's border-ink/40, flipped.
+                                         Full-strength rules use border-ink directly. */
 
-  /* Ink, darkest to lightest */
-  --ink:   #1c1a16;  /* headings, primary text */
-  --body:  #3a3630;  /* long-form body copy */
-  --muted: #6f665a;  /* secondary text — 5.3:1 on --bg, passes WCAG AA.
-                        Was #8a8074 at 3.7:1, which failed for body-size text. */
-  --faint: #b8b0a4;  /* DECORATIVE ONLY — separators, placeholders. Never text. */
+  /* Type, brightest to dimmest — all yellow, mirroring arus's all-ink type */
+  --ink:   #FDE102;  /* headings, primary text — THE brand yellow */
+  --body:  #FDE102;  /* long-form copy — arus body is full ink, so full yellow */
+  --muted: #b3a83e;  /* secondary text — ~7.5:1 on --bg, passes WCAG AA */
+  --faint: #5f5820;  /* DECORATIVE ONLY — separators, placeholders. Never text. */
 
-  /* Accent, split by the ground it sits on */
-  --gold:      #8b6835;  /* on light grounds */
-  --gold-lift: #c9a96e;  /* on dark grounds and over photography */
+  /* Legacy gold accents — admin editor still references them */
+  --gold:      #8b6835;
+  --gold-lift: #c9a96e;
 
-  /* arus.io brand yellow — the tie to the main site. NEVER body text on light
-     grounds (roughly 1.3:1 against --bg); it works as highlight marks behind
-     ink text, underlines, hover fills, selection, and as text over dark
-     photography scrims where it lands well past AA. */
+  /* Explicit alias for solid yellow fills (chips, markers, buttons) so the
+     code says bg-yellow rather than the role-remapped bg-ink. Text on a yellow
+     fill is always text-bg (#111). */
   --yellow: #FDE102;
 }
 
 @theme inline {
   --font-sans: var(--font-sans-family);
-  --font-serif: var(--font-serif-family);
+  /* No serif anymore — font-serif utilities resolve to Geist and the
+     .font-serif rule below layers black weight on top. */
+  --font-serif: var(--font-sans-family);
   --font-mono: var(--font-mono-family);
 
   --color-bg:        var(--bg);
@@ -66,15 +71,21 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-/* Ink-on-yellow selection — same as arus.io. The cheapest, most pervasive
-   brand tie there is. */
+/* Selection flips the flip: yellow ground, ink type — i.e. you select this
+   site and get a little piece of arus.io. */
 ::selection {
-  background: var(--ink);
-  color: var(--yellow);
+  background: var(--yellow);
+  color: var(--bg);
 }
 
+/* The display face. Every component that said font-serif now gets the arus
+   poster voice: Geist at black weight, tight tracking. Deliberately unlayered
+   so it overrides the font-bold / tracking-* utilities still sitting on those
+   elements — one declaration flips the whole site's display type. */
 .font-serif {
-  font-family: var(--font-serif-family), Georgia, serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
+  font-weight: 900;
+  letter-spacing: -0.03em;
 }
 
 /* ─── Paper grain ───
@@ -98,25 +109,35 @@ body {
    serif display type, with nothing in the middle register. These two are the
    "tiny" end, repeated across every page, so they live here rather than being
    spelled out inline eight times. */
-/* Labels are now Geist Mono in ink — the arus label voice. Mono carries its
-   own letterspaced texture, so tracking comes way down from the 0.24em the old
-   Inter labels needed. The accent moved out of the label text (yellow can't
-   pass contrast there) and into yellow highlight marks behind it. */
-.label {
-  font-family: var(--font-mono-family), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-weight: 500;
-  color: var(--ink);
-}
+/* Geist Mono labels — the arus label voice, yellow on ink here. In @layer
+   components so color utilities (text-bg on chips, group-hover flips) can
+   still override them; unlayered rules would silently win over utilities. */
+@layer components {
+  .label {
+    font-family: var(--font-mono-family), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink);
+  }
 
-.meta {
-  font-family: var(--font-mono-family), ui-monospace, monospace;
-  font-size: 0.6875rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--muted);
+  .meta {
+    font-family: var(--font-mono-family), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* Solid yellow tab carrying ink type — section heads, eyebrows. Pair with
+     .label: `class="label chip"`. */
+  .chip {
+    display: inline-block;
+    background: var(--yellow);
+    color: var(--bg);
+    padding: 0.25rem 0.5rem;
+  }
 }
 
 /* ─── Public prose ─── */
@@ -125,13 +146,13 @@ body {
 .prose { max-width: 68ch; font-size: 1.0625rem; }
 
 .prose h1, .prose h2, .prose h3 {
-  font-family: var(--font-serif-family), Georgia, serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
   color: var(--ink);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
-.prose h1 { font-size: 2rem; font-weight: 700; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.15; }
-.prose h2 { font-size: 1.625rem; font-weight: 700; margin-top: 2.25rem; margin-bottom: 0.75rem; line-height: 1.2; }
-.prose h3 { font-size: 1.25rem; font-weight: 600; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+.prose h1 { font-size: 2rem; font-weight: 800; margin-top: 2.5rem; margin-bottom: 1rem; line-height: 1.15; }
+.prose h2 { font-size: 1.625rem; font-weight: 800; margin-top: 2.25rem; margin-bottom: 0.75rem; line-height: 1.2; }
+.prose h3 { font-size: 1.25rem; font-weight: 700; margin-top: 1.75rem; margin-bottom: 0.5rem; }
 
 .prose p  { margin-bottom: 1.4rem; line-height: 1.8; color: var(--body); }
 
@@ -141,7 +162,7 @@ body {
   border: none;
   padding: 0;
   margin: 2.5rem 0;
-  font-family: var(--font-serif-family), Georgia, serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
   font-style: normal;
   font-size: 1.5rem;
   line-height: 1.35;
@@ -157,8 +178,8 @@ body {
 .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
 .prose li { margin-bottom: 0.4rem; line-height: 1.75; color: var(--body); }
 
-/* Ink text, thick yellow underline, full yellow marker on hover — the arus
-   link language translated onto paper. */
+/* Yellow text, thick underline, full invert on hover — the arus link
+   language on the flipped ground. */
 .prose a {
   color: var(--ink);
   text-decoration: underline;
@@ -166,7 +187,10 @@ body {
   text-decoration-thickness: 2px;
   text-underline-offset: 3px;
 }
-.prose a:hover { background: var(--yellow); }
+.prose a:hover {
+  background: var(--yellow);
+  color: var(--bg);
+}
 
 .prose blockquote {
   border-left: 2px solid var(--border);
@@ -297,9 +321,9 @@ body {
   line-height: 1.8;
   color: var(--ink);
 }
-.prose-editor h1 { font-family: var(--font-serif-family), Georgia, serif; font-size: 1.75rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--ink); }
-.prose-editor h2 { font-family: var(--font-serif-family), Georgia, serif; font-size: 1.35rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.4rem; color: var(--ink); }
-.prose-editor h3 { font-family: var(--font-serif-family), Georgia, serif; font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.35rem; }
+.prose-editor h1 { font-family: var(--font-sans-family), system-ui, sans-serif; font-size: 1.75rem; font-weight: 700; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--ink); }
+.prose-editor h2 { font-family: var(--font-sans-family), system-ui, sans-serif; font-size: 1.35rem; font-weight: 700; margin-top: 1.25rem; margin-bottom: 0.4rem; color: var(--ink); }
+.prose-editor h3 { font-family: var(--font-sans-family), system-ui, sans-serif; font-size: 1.1rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.35rem; }
 .prose-editor p  { margin-bottom: 0.75rem; }
 .prose-editor ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 0.75rem; }
 .prose-editor ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 0.75rem; }
@@ -313,7 +337,7 @@ body {
   border: none;
   padding: 0;
   margin: 1.25rem 0;
-  font-family: var(--font-serif-family), Georgia, serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
   font-style: normal;
   font-size: 1.25rem;
   line-height: 1.35;

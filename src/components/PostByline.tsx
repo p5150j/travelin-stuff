@@ -22,7 +22,7 @@ export default function PostByline({ city }: Props) {
     <div className="mt-12 pt-8 border-t border-border flex items-start gap-4">
       <span
         aria-hidden
-        className="shrink-0 w-12 h-12 rounded-full bg-ink text-bg font-serif font-bold text-lg flex items-center justify-center"
+        className="shrink-0 w-12 h-12 rounded-full bg-yellow text-bg font-serif font-bold text-lg flex items-center justify-center"
       >
         P
       </span>
@@ -38,7 +38,7 @@ export default function PostByline({ city }: Props) {
         </p>
         <Link
           href={`/cities/${encodeURIComponent(citySlug(city))}`}
-          className="label inline-block mt-4 border-b-2 border-ink pb-0.5 hover:bg-ink hover:text-yellow transition-colors"
+          className="label inline-block mt-4 border-b-2 border-yellow pb-0.5 hover:bg-yellow hover:text-bg transition-colors"
         >
           More from {city} →
         </Link>

@@ -63,10 +63,10 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
               otherwise paints over their descenders. */}
           <span ref={h1aRef} className="block relative">Living,</span>
           <span ref={h1bRef} className="block relative">Working</span>
-          {/* The one loud arus-yellow moment on the page — a marker highlight
-              behind the line that names the site. */}
+          {/* Yellow marker block carrying ink type — the inverted site's one
+              solid-fill moment, mirroring the arus hero's mass of ink. */}
           <span ref={h1cRef} className="block">
-            <span className="bg-yellow box-decoration-clone px-3 -mx-3">&amp; Wandering.</span>
+            <span className="bg-yellow text-bg box-decoration-clone px-3 -mx-3">&amp; Wandering.</span>
           </span>
         </h1>
 
@@ -76,17 +76,18 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
 
         {/* min-h-12 keeps both buttons at a 48px touch target. */}
         <div ref={btnRef} className="flex flex-wrap gap-3">
-          {/* Hovers borrow the arus invert: ink block flashes yellow text,
-              outline pill fills yellow. Resting states stay this site's own. */}
+          {/* arus invert hovers on the flipped ground: solid yellow pill drops
+              to an outline, outline pill fills solid. Border on both keeps the
+              size stable through the swap. */}
           <Link
             href="/blog"
-            className="inline-flex items-center min-h-12 px-7 bg-ink text-bg text-sm font-medium tracking-wide hover:text-yellow transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 border border-yellow bg-yellow text-bg text-sm font-medium tracking-wide hover:bg-transparent hover:text-ink transition-colors rounded-full"
           >
             Read All Posts
           </Link>
           <Link
             href="/cities"
-            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-ink hover:bg-yellow hover:text-ink transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-yellow hover:bg-yellow hover:text-bg transition-colors rounded-full"
           >
             Browse Cities
           </Link>
@@ -120,7 +121,9 @@ function MarqueeRow({
         <span
           key={i}
           className="font-serif font-bold mx-8 text-ink"
-          style={{ fontSize: "clamp(2.5rem,5vw,4.5rem)", opacity: 0.04 }}
+          /* 0.08 (up from 0.04 on the light theme): dim yellow on ink needs a
+             little more presence to register as texture at all. */
+          style={{ fontSize: "clamp(2.5rem,5vw,4.5rem)", opacity: 0.08 }}
         >
           {city}
         </span>
