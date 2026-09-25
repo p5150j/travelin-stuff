@@ -12,15 +12,22 @@ export default function PostCard({ post, large = false }: Props) {
   return (
     // Root stays <article> — AnimatedPostGrid queries for it to build the
     // scroll stagger. Changing this tag silently kills the animation.
-    <article className="group relative">
+    // The large card fills its grid cell on lg so the lead column bottom-aligns
+    // with the two stacked cards beside it instead of leaving a hole.
+    <article className={`group relative ${large ? "lg:h-full lg:flex lg:flex-col" : ""}`}>
       <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-10" aria-label={post.title} />
 
       {/* Image sits above the text rather than under a gradient. Taller crop on
           phones (4:5) so a full-width card fills more of the screen; wider on
-          desktop where a tall card would push the title below the fold. */}
+          desktop where a tall card would push the title below the fold. On lg
+          the large image drops its fixed aspect and grows to fill whatever
+          height the side column sets — min-h guards against collapsing when
+          there are no cards beside it to set that height. */}
       <div
         className={`relative overflow-hidden rounded-xl bg-raised ${
-          large ? "aspect-[4/5] sm:aspect-[16/10]" : "aspect-[4/5] sm:aspect-[3/2]"
+          large
+            ? "aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:grow lg:min-h-96"
+            : "aspect-[4/5] sm:aspect-[3/2]"
         }`}
       >
         {post.coverImage ? (
