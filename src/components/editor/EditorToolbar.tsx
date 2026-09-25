@@ -2,6 +2,7 @@
 import { Editor } from "@tiptap/react";
 import { useRef, useState } from "react";
 import { uploadAsset } from "@/lib/storage";
+import { toSpotifyEmbedUrl } from "./SpotifyEmbed";
 
 interface Props {
   editor: Editor;
@@ -52,6 +53,19 @@ export default function EditorToolbar({ editor }: Props) {
       return;
     }
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+  }
+
+  /** Prompt for a Spotify share link, convert it to the embed URL and insert
+      the player. Same prompt pattern as the link and caption buttons. */
+  function insertSpotify() {
+    const input = window.prompt("Spotify link (track, album, playlist, episode…)", "https://open.spotify.com/");
+    if (input === null || input.trim() === "") return;
+    const src = toSpotifyEmbedUrl(input.trim());
+    if (!src) {
+      window.alert("That doesn't look like a Spotify link. Paste the share URL, e.g. https://open.spotify.com/track/…");
+      return;
+    }
+    editor.chain().focus().insertContent({ type: "spotifyEmbed", attrs: { src } }).run();
   }
 
   /** Caption lives as an attribute on the image node, so this edits the
@@ -172,6 +186,16 @@ export default function EditorToolbar({ editor }: Props) {
         <span className="text-xs">{uploading === "video" ? `${Math.round(progress)}%` : "Video"}</span>
       </button>
 
+      <button
+        type="button"
+        onClick={insertSpotify}
+        className={btn(editor.isActive("spotifyEmbed")) + " flex items-center gap-1"}
+        title="Embed a Spotify player (paste a share link)"
+      >
+        <MusicIcon />
+        <span className="text-xs">Spotify</span>
+      </button>
+
       {/* Only meaningful with an image selected — click the image first. */}
       <button
         type="button"
@@ -253,6 +277,9 @@ function TableIcon() {
 }
 function CaptionIcon() {
   return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h16v10H4z M6 19h9" /></svg>;
+}
+function MusicIcon() {
+  return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19V6l12-3v13M9 19a3 3 0 11-6 0 3 3 0 016 0zm12-3a3 3 0 11-6 0 3 3 0 016 0z" /></svg>;
 }
 function VideoIcon() {
   return <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.723v6.554a1 1 0 01-1.447.894L15 14M4 8h8a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4a2 2 0 012-2z" /></svg>;

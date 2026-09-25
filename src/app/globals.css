@@ -277,6 +277,15 @@ body {
 .prose img  { width: 100%; margin: 2rem 0; }
 .prose video { width: 100%; margin: 2rem 0; max-height: 560px; }
 
+/* Spotify player embeds. Height comes from the iframe's own height attribute
+   (152 track / 352 collection); the block just spans the column. */
+.prose iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  margin: 2rem 0;
+}
+
 /* Captioned image. The figure owns the vertical margin so the image and its
    caption stay locked together as one unit. */
 .prose figure { margin: 2rem 0; }
@@ -298,6 +307,7 @@ body {
   .prose img:not(figure img),
   .prose video,
   .prose figure,
+  .prose iframe,
   .prose blockquote.pull {
     width: calc(100% + 2.5rem);
     margin-left: -1.25rem;
@@ -357,6 +367,7 @@ body {
 
 .prose-editor img   { max-width: 100%; border-radius: 10px; margin: 0.75rem 0; }
 .prose-editor video { max-width: 100%; border-radius: 10px; margin: 0.75rem 0; }
+.prose-editor iframe { display: block; width: 100%; border: 0; margin: 0.75rem 0; pointer-events: none; }
 .prose-editor hr { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
 
 /* Editor tables show a full grid — unlike the published version, you need to see

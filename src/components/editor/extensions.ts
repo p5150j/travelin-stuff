@@ -7,6 +7,7 @@ import { TableKit } from "@tiptap/extension-table";
 import { VideoNode } from "./VideoNode";
 import { CaptionedImage } from "./CaptionedImage";
 import { PullQuote } from "./PullQuote";
+import { SpotifyEmbed } from "./SpotifyEmbed";
 
 /**
  * The editor's schema, kept out of the React component so it can be built and
@@ -37,4 +38,5 @@ export const editorExtensions = [
   TextAlign.configure({ types: ["heading", "paragraph"] }),
   Placeholder.configure({ placeholder: "Start writing your post…" }),
   VideoNode,
+  SpotifyEmbed,
 ];

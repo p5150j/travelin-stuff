@@ -17,6 +17,7 @@ import { getSchema } from "@tiptap/core";
 import { editorExtensions } from "../src/components/editor/extensions";
 import { CaptionedImage } from "../src/components/editor/CaptionedImage";
 import { PullQuote } from "../src/components/editor/PullQuote";
+import { SpotifyEmbed, toSpotifyEmbedUrl, spotifyEmbedHeight } from "../src/components/editor/SpotifyEmbed";
 
 let failures = 0;
 
@@ -44,6 +45,7 @@ for (const n of ["table", "tableRow", "tableCell", "tableHeader"]) {
 }
 ok('custom node "pullQuote" registered', nodes.includes("pullQuote"));
 ok('custom node "video" registered', nodes.includes("video"));
+ok('custom node "spotifyEmbed" registered', nodes.includes("spotifyEmbed"));
 ok('"image" kept its name (CaptionedImage extends, not replaces)', nodes.includes("image"));
 ok('"blockquote" survives alongside pullQuote', nodes.includes("blockquote"));
 ok("link mark survives StarterKit link:false", "link" in schema.marks);
@@ -140,6 +142,48 @@ eq(
   ["blockquote.pull"]
 );
 ok("pullQuote outranks Blockquote's default priority of 100", PullQuote.config.priority === 200);
+
+console.log("\nspotify embed");
+console.log("─────────────");
+
+eq(
+  "share link → embed URL, dark theme",
+  toSpotifyEmbedUrl("https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC?si=abc123"),
+  "https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC?theme=0"
+);
+eq(
+  "intl segment and playlist handled",
+  toSpotifyEmbedUrl("https://open.spotify.com/intl-de/playlist/37i9dQZF1DXcBWIGoYBM5M"),
+  "https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?theme=0"
+);
+eq(
+  "already-an-embed URL passes through canonically",
+  toSpotifyEmbedUrl("https://open.spotify.com/embed/album/6dVIqQ8qmQ5GBnJ9shOYGE?utm_source=x"),
+  "https://open.spotify.com/embed/album/6dVIqQ8qmQ5GBnJ9shOYGE?theme=0"
+);
+eq("non-Spotify URL → null", toSpotifyEmbedUrl("https://youtube.com/watch?v=x"), null);
+eq("track height is the compact player", spotifyEmbedHeight("https://open.spotify.com/embed/track/x?theme=0"), 152);
+eq("playlist height is the tall player", spotifyEmbedHeight("https://open.spotify.com/embed/playlist/x?theme=0"), 352);
+
+const renderSpotify = SpotifyEmbed.config.renderHTML!.bind({ options: { HTMLAttributes: {} } } as never);
+eq(
+  "renders an iframe with derived height, lazy loading and playback allows",
+  renderSpotify({ HTMLAttributes: { src: "https://open.spotify.com/embed/track/abc?theme=0" } } as never),
+  [
+    "iframe",
+    {
+      src: "https://open.spotify.com/embed/track/abc?theme=0",
+      height: "152",
+      loading: "lazy",
+      allow: "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture",
+    },
+  ]
+);
+eq(
+  "parse rule claims only Spotify embed iframes",
+  (SpotifyEmbed.config.parseHTML!.call({ options: {} } as never) as { tag: string }[]).map((r) => r.tag),
+  ['iframe[src*="open.spotify.com/embed"]']
+);
 
 console.log(
   failures === 0 ? "\nall checks passed\n" : `\n${failures} CHECK(S) FAILED\n`
