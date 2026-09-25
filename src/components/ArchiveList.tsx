@@ -82,7 +82,7 @@ export default function ArchiveList({ posts }: Props) {
                 />
 
                 <div className="flex items-center gap-4 py-4">
-                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 overflow-hidden rounded-md bg-raised">
+                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 overflow-hidden bg-raised">
                     {post.coverImage ? (
                       <Image
                         src={post.coverImage}

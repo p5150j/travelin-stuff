@@ -59,6 +59,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   const post = await getPostBySlug(slug);
   if (!post) notFound();
 
+  // For the spec strip. 200wpm; floor of 1 so a short dispatch never says "0".
+  const words = post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
+  const minutes = Math.max(1, Math.round(words / 200));
+
   /* BlogPosting structured data — what earns rich results in search. Every field
      already exists on the post; nothing here is invented. Emitted as a plain
      <script> because JSON-LD isn't part of the Metadata API. */
@@ -87,10 +91,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Cover hero uses 62svh on mobile: svh excludes the collapsing browser
-          chrome, so it doesn't jump as the URL bar hides on scroll. */}
-      {post.coverImage ? (
-        <div className="relative w-full h-[62svh] sm:h-[68vh] overflow-hidden">
+      {/* Cover is a hard-cropped photo band closed by a full-strength yellow
+          rule — no gradient scrim, no text floating on the image. The title
+          gets its own block below, same anatomy as an arus section. svh on
+          mobile so the band doesn't jump as the URL bar collapses. */}
+      {post.coverImage && (
+        <div className="relative w-full h-[52svh] sm:h-[60vh] overflow-hidden border-b-2 border-b-ink">
           <Image
             src={post.coverImage}
             alt={post.title}
@@ -99,16 +105,43 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 max-w-3xl mx-auto px-5 sm:px-8 pb-10">
-            <PostMeta post={post} onImage />
-          </div>
         </div>
-      ) : (
-        <FadeUp className="max-w-3xl mx-auto px-5 sm:px-8 pt-16 pb-8 border-b border-border">
-          <PostMeta post={post} onImage={false} />
-        </FadeUp>
       )}
+
+      {/* Title block: chip → display title → lede, then the spec strip. */}
+      <header className="max-w-3xl mx-auto px-5 sm:px-8 pt-10 sm:pt-14">
+        <FadeUp>
+          <Link
+            href={`/cities/${encodeURIComponent(citySlug(post.city))}`}
+            className="label chip hover:opacity-80 transition-opacity"
+          >
+            {post.city}
+            {post.country ? ` · ${post.country}` : ""}
+          </Link>
+          <h1 className="font-serif text-[2.5rem] sm:text-6xl text-ink leading-[0.98] mt-5">
+            {post.title}
+          </h1>
+          <p className="mt-5 text-[1.0625rem] sm:text-xl text-muted leading-relaxed">
+            {post.excerpt}
+          </p>
+        </FadeUp>
+
+        {/* Spec strip — double rule top, hairline bottom, mono data. The arus
+            header language carrying the post's own numbers. */}
+        <FadeUp
+          delay={0.05}
+          className="mt-8 border-t-2 border-t-ink border-b border-border py-3 flex flex-wrap items-center justify-between gap-x-6 gap-y-1"
+        >
+          {post.publishedAt ? (
+            <time className="meta">{formatDate(post.publishedAt)}</time>
+          ) : (
+            <span className="meta">Unpublished</span>
+          )}
+          <span className="meta">
+            <span className="tabular-nums">{minutes}</span> min read
+          </span>
+        </FadeUp>
+      </header>
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12">
         <FadeUp>
@@ -116,7 +149,8 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         </FadeUp>
 
         {post.tags.length > 0 && (
-          <FadeUp delay={0.1} className="mt-12 pt-8 border-t border-border flex flex-wrap gap-2">
+          <FadeUp delay={0.1} className="mt-12 pt-8 border-t border-border flex flex-wrap items-center gap-2">
+            <span className="meta mr-2">Filed</span>
             {[...new Set(post.tags)].map((tag, i) => (
               <span key={`${tag}-${i}`} className="text-xs px-3 py-1 border border-border text-muted">
                 {tag}
@@ -131,46 +165,14 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 
         {/* "More from {city}" moved into the byline, so this is just the way out. */}
         <FadeUp delay={0.2} className="mt-10 border-t border-border pt-8">
-          <Link href="/blog" className="text-sm text-muted hover:text-ink transition-colors">
+          <Link
+            href="/blog"
+            className="label inline-block border-b-2 border-b-ink pb-0.5 hover:bg-yellow hover:text-bg transition-colors"
+          >
             ← All Posts
           </Link>
         </FadeUp>
       </div>
     </article>
-  );
-}
-
-function PostMeta({ post, onImage }: { post: NonNullable<Awaited<ReturnType<typeof getPostBySlug>>>; onImage: boolean }) {
-  return (
-    <>
-      {/* Over the dark photo scrim the label goes brand yellow — the one ground
-          where #FDE102 text has contrast to spare. */}
-      <div className={`label flex items-center gap-2 mb-4 ${onImage ? "!text-yellow" : ""}`}>
-        <Link
-          href={`/cities/${encodeURIComponent(citySlug(post.city))}`}
-          className="transition-opacity hover:opacity-70"
-        >
-          {post.city}
-        </Link>
-        {post.publishedAt && (
-          <>
-            <span className={onImage ? "text-white/30" : "text-faint"} aria-hidden>·</span>
-            <time className={onImage ? "text-white/55" : "text-muted"}>
-              {formatDate(post.publishedAt)}
-            </time>
-          </>
-        )}
-      </div>
-      <h1
-        className={`font-serif text-[2.375rem] sm:text-5xl lg:text-6xl font-bold leading-[1.02] tracking-[-0.025em] mb-5 ${
-          onImage ? "text-white" : "text-ink"
-        }`}
-      >
-        {post.title}
-      </h1>
-      <p className={`text-[1.0625rem] sm:text-lg leading-relaxed ${onImage ? "text-white/65" : "text-muted"}`}>
-        {post.excerpt}
-      </p>
-    </>
   );
 }

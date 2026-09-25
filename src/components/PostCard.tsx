@@ -24,7 +24,7 @@ export default function PostCard({ post, large = false }: Props) {
           height the side column sets — min-h guards against collapsing when
           there are no cards beside it to set that height. */}
       <div
-        className={`relative overflow-hidden rounded-xl bg-raised ${
+        className={`relative overflow-hidden bg-raised ${
           large
             ? "aspect-[4/5] sm:aspect-[16/10] lg:aspect-auto lg:grow lg:min-h-96"
             : "aspect-[4/5] sm:aspect-[3/2]"

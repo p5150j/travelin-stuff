@@ -156,18 +156,21 @@ body {
 
 .prose p  { margin-bottom: 1.4rem; line-height: 1.8; color: var(--body); }
 
-/* Pull quote — the editorial-voice marker. Apply to a <blockquote> that should
-   read as a statement rather than a citation. */
+/* Pull quote — the editorial-voice marker, now a solid yellow slab carrying
+   ink type: the loudest brand element inside a post, mirroring the hero
+   marker. Distinct from the bordered citation blockquote below. */
 .prose blockquote.pull {
   border: none;
-  padding: 0;
+  background: var(--yellow);
+  color: var(--bg);
+  padding: 1.5rem 1.75rem;
   margin: 2.5rem 0;
   font-family: var(--font-sans-family), system-ui, sans-serif;
   font-style: normal;
   font-size: 1.5rem;
-  line-height: 1.35;
-  color: var(--ink);
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 .prose strong { font-weight: 700; color: var(--ink); }
 .prose em { font-style: italic; }
@@ -193,7 +196,7 @@ body {
 }
 
 .prose blockquote {
-  border-left: 2px solid var(--border);
+  border-left: 2px solid var(--yellow);
   padding-left: 1.5rem;
   margin: 2rem 0;
   font-style: italic;
@@ -205,21 +208,20 @@ body {
 .prose code {
   background: var(--raised);
   padding: 0.15rem 0.4rem;
-  border-radius: 4px;
   font-size: 0.875em;
   font-family: var(--font-mono-family), ui-monospace, monospace;
   color: var(--ink);
 }
 
+/* Yellow slab with ink type, like the pull quote — code reads as a spec block. */
 .prose pre {
   background: var(--ink);
-  color: var(--raised);
+  color: var(--bg);
   padding: 1.25rem;
-  border-radius: 12px;
   overflow-x: auto;
   margin-bottom: 1.5rem;
 }
-.prose pre code { background: none; padding: 0; color: var(--raised); }
+.prose pre code { background: none; padding: 0; color: var(--bg); }
 
 .prose hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
 
@@ -271,35 +273,36 @@ body {
 
 .prose table tr:last-child td { border-bottom: none; }
 
-.prose img  { width: 100%; border-radius: 12px; margin: 2rem 0; }
-.prose video { width: 100%; border-radius: 12px; margin: 2rem 0; max-height: 560px; }
+/* Hard-cropped, no radius — photography as rectangles on the grid. */
+.prose img  { width: 100%; margin: 2rem 0; }
+.prose video { width: 100%; margin: 2rem 0; max-height: 560px; }
 
 /* Captioned image. The figure owns the vertical margin so the image and its
    caption stay locked together as one unit. */
 .prose figure { margin: 2rem 0; }
 .prose figure img { margin: 0; }
+/* Captions in mono — photo metadata reads like a spec line. */
 .prose figcaption {
   margin-top: 0.625rem;
-  font-size: 0.8125rem;
-  line-height: 1.5;
+  font-family: var(--font-mono-family), ui-monospace, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
   color: var(--muted);
 }
 
-/* On phones, media breaks the text column and runs edge to edge. -1.25rem
-   matches the px-5 page padding, so this must change if that padding does. */
+/* On phones, media breaks the text column and runs edge to edge — and the
+   pull-quote slab bleeds with it, a full-width yellow band. -1.25rem matches
+   the px-5 page padding, so this must change if that padding does. */
 @media (max-width: 639px) {
   .prose img:not(figure img),
   .prose video,
-  .prose figure {
+  .prose figure,
+  .prose blockquote.pull {
     width: calc(100% + 2.5rem);
     margin-left: -1.25rem;
     margin-right: -1.25rem;
     max-width: none;
-  }
-
-  .prose img:not(figure img),
-  .prose figure img {
-    border-radius: 0;
   }
 
   /* The image bleeds; the caption does not. Padding puts it back in the text

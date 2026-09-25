@@ -43,7 +43,7 @@ export default async function CitiesPage() {
                 >
                   {/* Photography leads. The old version of this page had none —
                       on a travel blog, which was the core problem with it. */}
-                  <div className="relative overflow-hidden rounded-xl bg-raised aspect-[4/3] sm:aspect-[4/3] sm:col-span-3">
+                  <div className="relative overflow-hidden bg-raised aspect-[4/3] sm:aspect-[4/3] sm:col-span-3">
                     {entry.coverImage ? (
                       <Image
                         src={entry.coverImage}
