@@ -62,7 +62,11 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
               paint layer — with 0.95 leading the marker's box on line three
               otherwise paints over their descenders. */}
           <span ref={h1aRef} className="block relative">Living,</span>
-          <span ref={h1bRef} className="block relative">Working</span>
+          {/* The rotated k — the arus.io hero signature ("Patric[k]"), carried
+              over verbatim: same 8deg, same bottom-left origin. */}
+          <span ref={h1bRef} className="block relative">
+            Wor<span className="inline-block origin-bottom-left rotate-[8deg] translate-y-[0.01em]">k</span>ing
+          </span>
           {/* Yellow marker block carrying ink type — the inverted site's one
               solid-fill moment, mirroring the arus hero's mass of ink. */}
           <span ref={h1cRef} className="block">
