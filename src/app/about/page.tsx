@@ -64,16 +64,17 @@ export default function AboutPage() {
         <SectionHead n="02" label="The Route" />
         <div className="prose">
           <p>
-            Germany, Croatia, Australia, Vietnam, the Philippines, Brazil. Not
-            two-week tourist passes — months at a time, working US hours, with
-            a Starlink in the luggage. I flew to Melbourne to hand over a
-            company we&apos;d just sold. I went to Saigon for a reset and found
-            the best city I&apos;ve ever been to. A box jellyfish wrapped
-            itself around my leg within hours of landing in El Nido, and I
-            stayed anyway.
+            Six countries and counting. Not two-week tourist passes — months
+            at a time, working US hours, with a Starlink in the luggage.
+            I&apos;ve flown across the planet to hand over a company we&apos;d
+            just sold. I&apos;ve landed somewhere planning a three-day
+            decompression stop and found the best city I&apos;ve ever been to.
+            A box jellyfish wrapped itself around my leg within hours of
+            stepping onto one island, and I stayed anyway.
           </p>
           <p>
-            I research places like an engineer — cost of living, internet,
+            Where, exactly? That&apos;s what the rest of this site is for. I
+            research places like an engineer — cost of living, internet,
             hospitals, visas — then I commit. The underrated spot, not the
             influencer hotspot.
           </p>
@@ -131,11 +132,11 @@ export default function AboutPage() {
             company. Remote, like always.
           </li>
           <li className="border-b border-border py-2.5 text-body">
-            Writing from the Big Island of Hawai&apos;i. Teaching free coding
-            and AI classes in Hilo.
+            Writing from an island that gets more rain than my Starlink would
+            prefer. Teaching free coding and AI classes while I&apos;m here.
           </li>
           <li className="border-b border-border py-2.5 text-body font-semibold">
-            Next stop: Iloilo City, Philippines.
+            Next stop: already booked. Watch the route.
           </li>
         </ul>
 
