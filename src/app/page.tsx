@@ -27,8 +27,10 @@ export default async function HomePage() {
               are the large type on the page — two competing sizes flattened the
               hierarchy and made the whole thing read as unfinished. */}
           <FadeUp className="flex items-baseline justify-between mb-8 pb-4 border-b border-border">
-            <h2 className="label">Latest</h2>
-            <Link href="/blog" className="meta hover:text-gold transition-colors">
+            {/* Section heads sit on a yellow chip — the arus accent carrying
+                ink text, since yellow can't pass contrast as text itself. */}
+            <h2 className="label bg-yellow px-2 py-1">Latest</h2>
+            <Link href="/blog" className="meta hover:bg-ink hover:text-yellow transition-colors px-1 -mx-1">
               All Posts →
             </Link>
           </FadeUp>
@@ -48,8 +50,8 @@ export default async function HomePage() {
       {cities.length > 0 && (
         <section className="py-16 border-t border-border">
           <FadeUp className="flex items-baseline justify-between mb-8 pb-4 border-b border-border">
-            <h2 className="label">Cities</h2>
-            <Link href="/cities" className="meta hover:text-gold transition-colors">
+            <h2 className="label bg-yellow px-2 py-1">Cities</h2>
+            <Link href="/cities" className="meta hover:bg-ink hover:text-yellow transition-colors px-1 -mx-1">
               All Cities →
             </Link>
           </FadeUp>
@@ -58,7 +60,7 @@ export default async function HomePage() {
               <Link
                 key={city}
                 href={`/cities/${encodeURIComponent(citySlug(city))}`}
-                className="group inline-flex items-center gap-2 min-h-11 px-4 border border-border rounded-full text-sm bg-surface hover:border-ink transition-colors"
+                className="group inline-flex items-center gap-2 min-h-11 px-4 border border-border rounded-full text-sm bg-surface hover:border-ink hover:bg-yellow transition-colors"
               >
                 <span className="text-ink font-medium">{city}</span>
                 <span className="text-muted text-xs">{country}</span>

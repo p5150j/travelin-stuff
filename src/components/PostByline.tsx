@@ -38,7 +38,7 @@ export default function PostByline({ city }: Props) {
         </p>
         <Link
           href={`/cities/${encodeURIComponent(citySlug(city))}`}
-          className="label inline-block mt-4 hover:opacity-70 transition-opacity"
+          className="label inline-block mt-4 border-b-2 border-ink pb-0.5 hover:bg-ink hover:text-yellow transition-colors"
         >
           More from {city} →
         </Link>

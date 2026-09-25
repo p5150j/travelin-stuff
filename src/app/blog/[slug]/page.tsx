@@ -143,7 +143,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
 function PostMeta({ post, onImage }: { post: NonNullable<Awaited<ReturnType<typeof getPostBySlug>>>; onImage: boolean }) {
   return (
     <>
-      <div className={`label flex items-center gap-2 mb-4 ${onImage ? "!text-gold-lift" : ""}`}>
+      {/* Over the dark photo scrim the label goes brand yellow — the one ground
+          where #FDE102 text has contrast to spare. */}
+      <div className={`label flex items-center gap-2 mb-4 ${onImage ? "!text-yellow" : ""}`}>
         <Link
           href={`/cities/${encodeURIComponent(citySlug(post.city))}`}
           className="transition-opacity hover:opacity-70"

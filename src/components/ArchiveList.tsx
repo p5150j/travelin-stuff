@@ -100,8 +100,10 @@ export default function ArchiveList({ posts }: Props) {
 
                   <div className="min-w-0 flex-1">
                     <p className="meta mb-1">{formatDayMonth(post.publishedAt)}</p>
-                    <h3 className="font-serif text-[1.25rem] sm:text-[1.4375rem] font-bold text-ink leading-[1.2] tracking-[-0.015em] line-clamp-2 group-hover:text-gold transition-colors">
-                      {post.title}
+                    <h3 className="font-serif text-[1.25rem] sm:text-[1.4375rem] font-bold text-ink leading-[1.2] tracking-[-0.015em] line-clamp-2">
+                      <span className="box-decoration-clone group-hover:bg-yellow transition-colors">
+                        {post.title}
+                      </span>
                     </h3>
                   </div>
 

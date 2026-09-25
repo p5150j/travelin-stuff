@@ -58,9 +58,16 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
             overflowed a 390px viewport. Each span is its own line, so the
             breaks are deliberate instead of whatever the browser picks. */}
         <h1 className="font-serif text-[3.5rem] sm:text-7xl lg:text-[6.5rem] font-bold text-ink leading-[0.95] tracking-[-0.03em] mb-7 max-w-4xl">
-          <span ref={h1aRef} className="block">Living,</span>
-          <span ref={h1bRef} className="block">Working</span>
-          <span ref={h1cRef} className="block">&amp; Wandering.</span>
+          {/* relative on the first two lines lifts them into the positioned
+              paint layer — with 0.95 leading the marker's box on line three
+              otherwise paints over their descenders. */}
+          <span ref={h1aRef} className="block relative">Living,</span>
+          <span ref={h1bRef} className="block relative">Working</span>
+          {/* The one loud arus-yellow moment on the page — a marker highlight
+              behind the line that names the site. */}
+          <span ref={h1cRef} className="block">
+            <span className="bg-yellow box-decoration-clone px-3 -mx-3">&amp; Wandering.</span>
+          </span>
         </h1>
 
         <p ref={subRef} className="text-muted text-[1.0625rem] sm:text-xl max-w-lg leading-relaxed mb-10">
@@ -69,15 +76,17 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
 
         {/* min-h-12 keeps both buttons at a 48px touch target. */}
         <div ref={btnRef} className="flex flex-wrap gap-3">
+          {/* Hovers borrow the arus invert: ink block flashes yellow text,
+              outline pill fills yellow. Resting states stay this site's own. */}
           <Link
             href="/blog"
-            className="inline-flex items-center min-h-12 px-7 bg-ink text-bg text-sm font-medium tracking-wide hover:bg-body transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 bg-ink text-bg text-sm font-medium tracking-wide hover:text-yellow transition-colors rounded-full"
           >
             Read All Posts
           </Link>
           <Link
             href="/cities"
-            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-ink hover:text-ink transition-colors rounded-full"
+            className="inline-flex items-center min-h-12 px-7 border border-border text-muted text-sm tracking-wide hover:border-ink hover:bg-yellow hover:text-ink transition-colors rounded-full"
           >
             Browse Cities
           </Link>

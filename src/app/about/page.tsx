@@ -11,7 +11,7 @@ export default function AboutPage() {
   return (
     <div className="max-w-3xl mx-auto px-5 sm:px-8 py-16">
       <div className="border-b border-border pb-10 mb-12">
-        <p className="text-xs tracking-[0.3em] uppercase text-gold mb-4">The Story</p>
+        <p className="label inline-block bg-yellow px-2 py-1 mb-4">The Story</p>
         <h1 className="font-serif text-4xl sm:text-5xl font-bold text-ink">About</h1>
       </div>
       <div className="prose">

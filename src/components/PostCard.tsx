@@ -64,13 +64,17 @@ export default function PostCard({ post, large = false }: Props) {
         {/* Big serif title carries the hierarchy now that there's no image
             overlay competing with it — 26px on mobile, up from the original 18px. */}
         <h2
-          className={`font-serif font-bold text-ink tracking-[-0.015em] group-hover:text-gold transition-colors ${
+          className={`font-serif font-bold text-ink tracking-[-0.015em] ${
             large
               ? "text-[2rem] sm:text-[2.625rem] leading-[1.06]"
               : "text-[1.625rem] sm:text-[1.75rem] leading-[1.15]"
           }`}
         >
-          {post.title}
+          {/* Yellow marker highlight on hover, cloned per wrapped line —
+              replaces the old gold text-tint. */}
+          <span className="box-decoration-clone group-hover:bg-yellow transition-colors">
+            {post.title}
+          </span>
         </h2>
 
         {large && (

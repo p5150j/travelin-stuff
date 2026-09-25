@@ -21,11 +21,18 @@
   /* Accent, split by the ground it sits on */
   --gold:      #8b6835;  /* on light grounds */
   --gold-lift: #c9a96e;  /* on dark grounds and over photography */
+
+  /* arus.io brand yellow — the tie to the main site. NEVER body text on light
+     grounds (roughly 1.3:1 against --bg); it works as highlight marks behind
+     ink text, underlines, hover fills, selection, and as text over dark
+     photography scrims where it lands well past AA. */
+  --yellow: #FDE102;
 }
 
 @theme inline {
-  --font-sans: var(--font-inter);
+  --font-sans: var(--font-sans-family);
   --font-serif: var(--font-serif-family);
+  --font-mono: var(--font-mono-family);
 
   --color-bg:        var(--bg);
   --color-surface:   var(--surface);
@@ -37,6 +44,7 @@
   --color-faint:     var(--faint);
   --color-gold:      var(--gold);
   --color-gold-lift: var(--gold-lift);
+  --color-yellow:    var(--yellow);
 }
 
 html { scroll-behavior: smooth; }
@@ -53,9 +61,16 @@ html { scroll-behavior: smooth; }
 body {
   background-color: var(--bg);
   color: var(--ink);
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
   /* Stop iOS Safari from inflating body copy in landscape. */
   -webkit-text-size-adjust: 100%;
+}
+
+/* Ink-on-yellow selection — same as arus.io. The cheapest, most pervasive
+   brand tie there is. */
+::selection {
+  background: var(--ink);
+  color: var(--yellow);
 }
 
 .font-serif {
@@ -83,17 +98,23 @@ body {
    serif display type, with nothing in the middle register. These two are the
    "tiny" end, repeated across every page, so they live here rather than being
    spelled out inline eight times. */
+/* Labels are now Geist Mono in ink — the arus label voice. Mono carries its
+   own letterspaced texture, so tracking comes way down from the 0.24em the old
+   Inter labels needed. The accent moved out of the label text (yellow can't
+   pass contrast there) and into yellow highlight marks behind it. */
 .label {
+  font-family: var(--font-mono-family), ui-monospace, monospace;
   font-size: 0.6875rem;
-  letter-spacing: 0.24em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 500;
-  color: var(--gold);
+  color: var(--ink);
 }
 
 .meta {
+  font-family: var(--font-mono-family), ui-monospace, monospace;
   font-size: 0.6875rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
 }
@@ -136,8 +157,16 @@ body {
 .prose ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
 .prose li { margin-bottom: 0.4rem; line-height: 1.75; color: var(--body); }
 
-.prose a  { color: var(--gold); text-decoration: underline; text-underline-offset: 3px; }
-.prose a:hover { color: var(--ink); }
+/* Ink text, thick yellow underline, full yellow marker on hover — the arus
+   link language translated onto paper. */
+.prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.prose a:hover { background: var(--yellow); }
 
 .prose blockquote {
   border-left: 2px solid var(--border);
@@ -154,8 +183,8 @@ body {
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
   font-size: 0.875em;
-  font-family: ui-monospace, monospace;
-  color: var(--gold);
+  font-family: var(--font-mono-family), ui-monospace, monospace;
+  color: var(--ink);
 }
 
 .prose pre {
@@ -183,9 +212,9 @@ body {
 }
 
 .prose table th {
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-mono-family), ui-monospace, monospace;
   font-size: 0.6875rem;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   font-weight: 500;
   color: var(--muted);
@@ -263,7 +292,7 @@ body {
 
 /* ─── Editor prose (admin TipTap area) ─── */
 .prose-editor {
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: var(--font-sans-family), system-ui, sans-serif;
   font-size: 0.9375rem;
   line-height: 1.8;
   color: var(--ink);

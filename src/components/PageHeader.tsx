@@ -15,7 +15,7 @@ interface Props {
 export default function PageHeader({ eyebrow, title, subtitle }: Props) {
   return (
     <FadeUp className="border-b border-border pb-10 mb-12">
-      {eyebrow && <p className="label mb-5 block">{eyebrow}</p>}
+      {eyebrow && <p className="label mb-5 inline-block bg-yellow px-2 py-1">{eyebrow}</p>}
       <h1 className="font-serif text-[2.75rem] sm:text-6xl font-bold text-ink leading-[0.98] tracking-[-0.025em]">
         {title}
       </h1>

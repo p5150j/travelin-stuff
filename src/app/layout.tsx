@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
-import { Inter, Fraunces } from "next/font/google";
+import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { siteUrl, siteName } from "@/lib/site";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+/* Geist Sans + Mono are the arus.io brand faces — sharing them (and the yellow
+   below in globals.css) is what ties the two sites together. Fraunces stays:
+   the serif display voice is this site's own identity. */
+const sans = Geist({ subsets: ["latin"], variable: "--font-sans-family" });
+const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono-family" });
 
 /* Fraunces replaces Playfair Display. Playfair is a high-contrast Didone — its
    hairlines go spindly below ~30px, which is exactly where post-card titles
@@ -56,7 +60,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${serif.variable} h-full antialiased`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable} ${serif.variable} h-full antialiased`}>
       {/* bg/text come from globals.css (#faf9f6 / #1c1a16). The old
           bg-stone-50 text-stone-900 utilities were cool-toned and fought the
           warm palette everything else uses. */}

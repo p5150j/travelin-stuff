@@ -71,8 +71,10 @@ export default async function CitiesPage() {
                       )}
                     </p>
 
-                    <h2 className="font-serif text-[2.125rem] sm:text-[2.5rem] font-bold text-ink leading-[1.04] tracking-[-0.025em] group-hover:text-gold transition-colors">
-                      {entry.city}
+                    <h2 className="font-serif text-[2.125rem] sm:text-[2.5rem] font-bold text-ink leading-[1.04] tracking-[-0.025em]">
+                      <span className="box-decoration-clone group-hover:bg-yellow transition-colors">
+                        {entry.city}
+                      </span>
                     </h2>
 
                     <p className="meta mt-3">

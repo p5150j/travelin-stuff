@@ -24,7 +24,7 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-bg/90 backdrop-blur-md">
       <nav className="max-w-6xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="font-serif text-lg font-bold text-ink hover:text-gold transition-colors tracking-wide">
+        <Link href="/" className="font-serif text-lg font-bold text-ink hover:bg-yellow transition-colors tracking-wide px-1 -mx-1">
           Wandering & Working
         </Link>
 
