@@ -39,15 +39,14 @@ export default function PostMap({ city, lat, lon }: Props) {
         boxZoom: false,
         keyboard: false,
         touchZoom: false,
+        // Leaflet's attribution widget is library chrome; the license-required
+        // OSM/CARTO credit renders below the map in our own type instead.
+        attributionControl: false,
       });
 
       L.tileLayer(
         "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
-        {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
-          maxZoom: 19,
-        }
+        { maxZoom: 19 }
       ).addTo(map);
 
       // divIcon with zero footprint; the .map-pin chip centers itself with a
@@ -67,10 +66,24 @@ export default function PostMap({ city, lat, lon }: Props) {
   }, [city, lat, lon]);
 
   return (
-    <div
-      ref={ref}
-      aria-label={`Map showing ${city}`}
-      className="h-56 sm:h-72 w-full rounded-xl overflow-hidden border border-border bg-raised"
-    />
+    <div>
+      <div
+        ref={ref}
+        aria-label={`Map showing ${city}`}
+        className="h-56 sm:h-72 w-full rounded-xl overflow-hidden border border-border bg-raised"
+      />
+      {/* Required by the OSM (ODbL) and CARTO basemap licenses — kept, but as
+          a spec footnote in our own type rather than Leaflet's overlay. */}
+      <p className="meta mt-2 text-right normal-case tracking-normal">
+        map data ©{" "}
+        <a href="https://www.openstreetmap.org/copyright" className="hover:text-ink" target="_blank" rel="noopener noreferrer">
+          OpenStreetMap
+        </a>{" "}
+        · ©{" "}
+        <a href="https://carto.com/attributions" className="hover:text-ink" target="_blank" rel="noopener noreferrer">
+          CARTO
+        </a>
+      </p>
+    </div>
   );
 }

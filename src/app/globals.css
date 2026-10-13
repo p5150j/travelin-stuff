@@ -450,13 +450,6 @@ body {
   background: var(--raised);
   font-family: var(--font-sans-family), system-ui, sans-serif;
 }
-.leaflet-container .leaflet-control-attribution {
-  background: rgba(17, 17, 17, 0.75);
-  color: var(--muted);
-}
-.leaflet-container .leaflet-control-attribution a {
-  color: var(--muted);
-}
 
 /* ─── Reduced motion ───
    Kills the hero marquee and smooth scrolling. The GSAP components check
