@@ -102,9 +102,12 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
             alt={post.title}
             fill
             sizes="100vw"
-            className="object-cover"
+            className="grade object-cover"
             priority
           />
+          {/* Ink scrim at the base eases the photo into the title block's
+              black ground — decorative only, no text sits on it. */}
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/50 via-transparent to-transparent pointer-events-none" />
         </div>
       )}
 

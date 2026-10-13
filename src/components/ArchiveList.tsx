@@ -91,7 +91,7 @@ export default function ArchiveList({ posts }: Props) {
                         alt=""
                         fill
                         sizes="80px"
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="grade object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-raised to-border" />

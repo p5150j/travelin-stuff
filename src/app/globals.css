@@ -138,6 +138,23 @@ body {
     color: var(--bg);
     padding: 0.25rem 0.5rem;
   }
+
+  /* ─── Brand grade ───
+     One film stock for all photography: a slight warm push toward the brand
+     yellow plus a contrast bump, so six cameras' worth of photos read as one
+     site. Subtle on purpose — the photos are documentary content, not decor.
+     A plain filter (no blend modes, which are expensive on mobile Safari)
+     so it works on bare <img>/<video> tags from stored post HTML too. */
+  .grade {
+    filter: sepia(0.18) saturate(1.12) contrast(1.05);
+  }
+}
+
+/* Post-body media can't be wrapped or classed — it's stored HTML — so the
+   grade lands on the selectors directly. Keep in sync with .grade above. */
+.prose img,
+.prose video {
+  filter: sepia(0.18) saturate(1.12) contrast(1.05);
 }
 
 /* ─── Public prose ─── */

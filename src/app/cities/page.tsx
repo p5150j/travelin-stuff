@@ -45,13 +45,17 @@ export default async function CitiesPage() {
                       on a travel blog, which was the core problem with it. */}
                   <div className="relative overflow-hidden bg-raised aspect-[4/3] sm:aspect-[4/3] sm:col-span-3">
                     {entry.coverImage ? (
-                      <Image
-                        src={entry.coverImage}
-                        alt={entry.city}
-                        fill
-                        sizes="(min-width: 640px) 60vw, 100vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      />
+                      <>
+                        <Image
+                          src={entry.coverImage}
+                          alt={entry.city}
+                          fill
+                          sizes="(min-width: 640px) 60vw, 100vw"
+                          className="grade object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        />
+                        {/* Ink scrim grounds the photo into the black page. */}
+                        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent pointer-events-none" />
+                      </>
                     ) : (
                       <div className="absolute inset-0 bg-gradient-to-br from-raised to-border" />
                     )}
