@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getCities } from "@/lib/posts";
+import { geocodeCity } from "@/lib/geocode";
 import { citySlug, formatDateRange } from "@/lib/utils";
 import PageHeader from "@/components/PageHeader";
 import FadeUp from "@/components/FadeUp";
+import CityMap, { MapStop } from "./CityMap";
 
 export const revalidate = 60;
 
@@ -18,6 +20,23 @@ export const metadata: Metadata = {
 export default async function CitiesPage() {
   const cities = await getCities().catch(() => []);
 
+  // Geocode the stops for the map. Sequential on purpose — Nominatim's usage
+  // policy is 1 req/s and only the cold-cache render pays this; afterwards
+  // the fetch cache answers for ~30 days. Unresolvable names just get no pin.
+  const stops: MapStop[] = [];
+  for (const [i, entry] of cities.entries()) {
+    const pt = await geocodeCity(entry.city, entry.country);
+    if (pt) {
+      stops.push({
+        city: entry.city,
+        href: `/cities/${encodeURIComponent(citySlug(entry.city))}`,
+        lat: pt.lat,
+        lon: pt.lon,
+        n: i + 1,
+      });
+    }
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-5 sm:px-8 py-16">
       <PageHeader
@@ -29,6 +48,13 @@ export default async function CitiesPage() {
             : undefined
         }
       />
+
+      {/* The route, on an actual map — needs two located stops to be a route. */}
+      {stops.length >= 2 && (
+        <FadeUp className="mb-14">
+          <CityMap stops={stops} />
+        </FadeUp>
+      )}
 
       {cities.length === 0 ? (
         <p className="text-muted text-center py-24">No cities yet.</p>

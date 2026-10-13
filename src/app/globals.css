@@ -428,6 +428,52 @@ body {
   pointer-events: none;
 }
 
+/* ─── Route map (Leaflet on /cities) ───
+   Square yellow stop markers carrying the mono stop numbers — the same chip
+   language as the rest of the site — plus dark popups so Leaflet's default
+   white UI doesn't punch a hole in the page. */
+.map-stop {
+  width: 28px;
+  height: 28px;
+  background: var(--yellow);
+  color: var(--bg);
+  font-family: var(--font-mono-family), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--bg);
+}
+
+.leaflet-container {
+  background: var(--raised);
+  font-family: var(--font-sans-family), system-ui, sans-serif;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: var(--surface);
+  color: var(--ink);
+  border-radius: 8px;
+  box-shadow: none;
+  border: 1px solid var(--border);
+}
+.leaflet-popup-content a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--yellow);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+.leaflet-container .leaflet-control-attribution {
+  background: rgba(17, 17, 17, 0.75);
+  color: var(--muted);
+}
+.leaflet-container .leaflet-control-attribution a {
+  color: var(--muted);
+}
+
 /* ─── Reduced motion ───
    Kills the hero marquee and smooth scrolling. The GSAP components check
    prefers-reduced-motion in JS as well, since CSS can't stop a JS tween. */
