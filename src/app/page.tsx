@@ -18,7 +18,10 @@ export default async function HomePage() {
       <HeroSection
         postCount={posts.length}
         cityCount={cities.length}
-        cities={cities.map((c) => c.city)}
+        /* Reversed: getCities() is oldest-first for the /cities route, but the
+           marquee should lead with the newest stop — otherwise a fresh city
+           sits at the tail of an 80s loop and is effectively invisible. */
+        cities={cities.map((c) => c.city).reverse()}
       />
 
       {posts.length > 0 && (

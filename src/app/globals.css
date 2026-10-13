@@ -406,10 +406,14 @@ body {
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
 
+  /* Stop the marquee, but don't freeze all three rows at the same first few
+     names — static per-row offsets show different slices of the city list,
+     so the frozen hero still reads as a collage rather than a repeat. */
   .marquee-row {
     animation: none !important;
-    transform: none !important;
   }
+  .marquee-row:nth-child(2) { transform: translateX(-18%) !important; }
+  .marquee-row:nth-child(3) { transform: translateX(-33%) !important; }
 
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
