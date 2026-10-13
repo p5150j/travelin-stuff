@@ -9,8 +9,25 @@ interface Props {
   cities: string[];
 }
 
+/* Deterministic rotation — no Math.random here: the rows render on the server
+   and any nondeterminism would be a hydration mismatch. */
+function rotate(arr: string[], by: number): string[] {
+  if (arr.length === 0) return arr;
+  const n = by % arr.length;
+  return [...arr.slice(n), ...arr.slice(0, n)];
+}
+
 export default function HeroSection({ postCount, cityCount, cities }: Props) {
-  const DOUBLE = cities.length > 0 ? [...cities, ...cities] : ["..."];
+  /* Each row gets the list rotated by a third. All three rows used to render
+     the identical sequence, so with few cities and ~3 names visible per row,
+     the hero read as the same names echoing on a loop. Rotation guarantees
+     the rows disagree at every moment. Doubling makes the -50% keyframe
+     loop seamless. */
+  const rows = [0, 1, 2].map((i) => {
+    if (cities.length === 0) return ["..."];
+    const r = rotate(cities, Math.ceil((cities.length / 3) * i));
+    return [...r, ...r];
+  });
   const rootRef  = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLParagraphElement>(null);
   const h1aRef  = useRef<HTMLSpanElement>(null);
@@ -43,9 +60,9 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
 
       {/* Scrolling city names — background decoration */}
       <div className="absolute inset-0 flex flex-col justify-center gap-8 pointer-events-none select-none" aria-hidden>
-        <MarqueeRow cities={DOUBLE} direction="left"  speed={60} />
-        <MarqueeRow cities={DOUBLE} direction="right" speed={80} offset="-15s" />
-        <MarqueeRow cities={DOUBLE} direction="left"  speed={50} offset="-30s" />
+        <MarqueeRow cities={rows[0]} direction="left"  speed={60} />
+        <MarqueeRow cities={rows[1]} direction="right" speed={80} offset="-15s" />
+        <MarqueeRow cities={rows[2]} direction="left"  speed={50} offset="-30s" />
       </div>
 
       {/* Hero content */}
