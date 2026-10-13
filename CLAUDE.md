@@ -42,8 +42,8 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 
 On Netlify: add these under **Site Settings → Environment Variables**.
 
-The CARTO basemap key for the /cities route map is hardcoded in
-`src/app/cities/CityMap.tsx` — basemap keys are browser-exposed by design;
+The CARTO basemap key for the per-post "Where" map is hardcoded in
+`src/components/PostMap.tsx` — basemap keys are browser-exposed by design;
 restrict it by domain in the CARTO dashboard.
 
 ---

@@ -428,43 +428,27 @@ body {
   pointer-events: none;
 }
 
-/* ─── Route map (Leaflet on /cities) ───
-   Square yellow stop markers carrying the mono stop numbers — the same chip
-   language as the rest of the site — plus dark popups so Leaflet's default
-   white UI doesn't punch a hole in the page. */
-.map-stop {
-  width: 28px;
-  height: 28px;
+/* ─── Post map (the "Where" block, Leaflet) ───
+   One yellow city chip pinned on the dark basemap — same chip language as
+   the rest of the site. The pin centers itself over the marker point so the
+   name can be any length. */
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
   background: var(--yellow);
   color: var(--bg);
   font-family: var(--font-mono-family), ui-monospace, monospace;
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--bg);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.5rem;
 }
 
 .leaflet-container {
   background: var(--raised);
   font-family: var(--font-sans-family), system-ui, sans-serif;
-}
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-  background: var(--surface);
-  color: var(--ink);
-  border-radius: 8px;
-  box-shadow: none;
-  border: 1px solid var(--border);
-}
-.leaflet-popup-content a {
-  color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: var(--yellow);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
 }
 .leaflet-container .leaflet-control-attribution {
   background: rgba(17, 17, 17, 0.75);

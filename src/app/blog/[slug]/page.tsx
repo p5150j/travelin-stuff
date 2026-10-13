@@ -3,10 +3,12 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { getPostBySlug, getAllPosts } from "@/lib/posts";
+import { geocodeCity } from "@/lib/geocode";
 import { citySlug, formatDate, truncate } from "@/lib/utils";
 import { siteUrl, siteName } from "@/lib/site";
 import FadeUp from "@/components/FadeUp";
 import PostByline from "@/components/PostByline";
+import PostMap from "@/components/PostMap";
 
 export const revalidate = 60;
 
@@ -62,6 +64,10 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
   // For the spec strip. 200wpm; floor of 1 so a short dispatch never says "0".
   const words = post.content.replace(/<[^>]+>/g, " ").trim().split(/\s+/).filter(Boolean).length;
   const minutes = Math.max(1, Math.round(words / 200));
+
+  // For the "Where" block. Cached ~30 days; an unresolvable city just means
+  // the post renders without a map.
+  const point = await geocodeCity(post.city, post.country).catch(() => null);
 
   /* BlogPosting structured data — what earns rich results in search. Every field
      already exists on the post; nothing here is invented. Emitted as a plain
@@ -165,6 +171,20 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <FadeUp delay={0.15}>
           <PostByline city={post.city} />
         </FadeUp>
+
+        {/* Where this was written from — an isolated graphic, not a widget:
+            the map accepts no interaction, it just locates the post. */}
+        {point && (
+          <FadeUp delay={0.2} className="mt-10 border-t border-border pt-8">
+            <div className="flex items-baseline justify-between mb-4">
+              <span className="label">Where</span>
+              <span className="meta tabular-nums">
+                {point.lat.toFixed(4)}, {point.lon.toFixed(4)}
+              </span>
+            </div>
+            <PostMap city={post.city} lat={point.lat} lon={point.lon} />
+          </FadeUp>
+        )}
 
         {/* "More from {city}" moved into the byline, so this is just the way out. */}
         <FadeUp delay={0.2} className="mt-10 border-t border-border pt-8">
