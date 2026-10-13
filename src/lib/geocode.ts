@@ -18,19 +18,20 @@ export interface GeoPoint {
   lon: number;
 }
 
-async function query(q: string): Promise<GeoPoint | null> {
+async function query(q: string, requireAddresstype?: string): Promise<GeoPoint | null> {
   try {
     const res = await fetch(
-      `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`,
+      `https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&q=${encodeURIComponent(q)}`,
       {
         headers: { "User-Agent": "WanderingAndWorking/1.0 (https://travel.arus.io)" },
         next: { revalidate: 60 * 60 * 24 * 30 },
       }
     );
     if (!res.ok) return null;
-    const rows: { lat: string; lon: string }[] = await res.json();
+    const rows: { lat: string; lon: string; addresstype?: string }[] = await res.json();
     const hit = rows?.[0];
     if (!hit) return null;
+    if (requireAddresstype && hit.addresstype !== requireAddresstype) return null;
     const lat = parseFloat(hit.lat);
     const lon = parseFloat(hit.lon);
     return Number.isFinite(lat) && Number.isFinite(lon) ? { lat, lon } : null;
@@ -42,5 +43,8 @@ async function query(q: string): Promise<GeoPoint | null> {
 export async function geocodeCity(city: string, country: string): Promise<GeoPoint | null> {
   const exact = await query(country ? `${city}, ${country}` : city);
   if (exact) return exact;
-  return country ? query(country) : null;
+  // The fallback must resolve to an actual country boundary. Without this, a
+  // typo'd country field matched a random OSM building literally named
+  // "Phillipines" in Washington D.C. and pinned a post to the White House.
+  return country ? query(country, "country") : null;
 }
