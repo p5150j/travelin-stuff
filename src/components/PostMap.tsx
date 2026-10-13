@@ -44,12 +44,13 @@ export default function PostMap({ city, lat, lon }: Props) {
         attributionControl: false,
       });
 
+      // NO detectRetina: it switches Leaflet to 128px tiles, which fights the
+      // 257px seam-overlap rule in globals.css (tiles must stay 256-based).
+      // The overlap is what actually kills the hairline seams at fractional
+      // zoom/DPR; retina sharpness loses the trade.
       L.tileLayer(
-        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
-        // detectRetina serves @2x tiles on high-DPR screens — sharper labels,
-        // and tile seams (hairlines where tile edges anti-alias at fractional
-        // positions) mostly vanish.
-        { maxZoom: 19, detectRetina: true }
+        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
+        { maxZoom: 19 }
       ).addTo(map);
 
       // divIcon with zero footprint; the .map-pin chip centers itself with a

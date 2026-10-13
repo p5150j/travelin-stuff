@@ -446,13 +446,16 @@ body {
   padding: 0.25rem 0.5rem;
 }
 
-/* Ground color must sit close to the dark tiles' own color: at mobile device
-   pixel ratios Leaflet's tile positions round fractionally, leaving hairline
-   seams between tiles — whatever backs them bleeds through as thin lines.
-   --raised (warm, lighter) made the seams glow; --bg is near-identical to the
-   basemap so the same seams disappear. */
+/* At fractional effective scales (browser zoom, odd DPRs) Leaflet's tile
+   positions round to sub-pixels, leaving hairline gaps where the container
+   ground shows through as thin lines. The cure is camouflage: back the tiles
+   with EXACTLY their own base color so a gap is invisible. #262626 is not a
+   palette color — it is CARTO dark_all's measured land/ocean base, pinned to
+   third-party imagery, which is why it's a literal rather than a token.
+   (Do NOT "fix" this with oversized tiles or detectRetina — both were tried
+   and both manufacture new seams at common integer DPRs.) */
 .leaflet-container {
-  background: var(--bg);
+  background: #262626;
   font-family: var(--font-sans-family), system-ui, sans-serif;
 }
 
