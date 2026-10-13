@@ -38,10 +38,13 @@ NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
 NEXT_PUBLIC_FIREBASE_APP_ID
 NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
-NEXT_PUBLIC_CARTO_API_KEY        # dark basemap tiles on /cities; map falls back to filtered OSM tiles without it
 ```
 
 On Netlify: add these under **Site Settings → Environment Variables**.
+
+The CARTO basemap key for the /cities route map is hardcoded in
+`src/app/cities/CityMap.tsx` — basemap keys are browser-exposed by design;
+restrict it by domain in the CARTO dashboard.
 
 ---
 

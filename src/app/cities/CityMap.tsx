@@ -35,29 +35,17 @@ export default function CityMap({ stops }: { stops: MapStop[] }) {
         zoomControl: true,
       });
 
-      /* CARTO's dark basemap when the key is configured; otherwise plain OSM
-         tiles graded dark with a pane-level inline filter. Inline rather than
-         a stylesheet rule: the CSS minifier collapses invert(1) to invert(),
-         which Chrome then drops, so the stylesheet version silently no-ops. */
-      const cartoKey = process.env.NEXT_PUBLIC_CARTO_API_KEY;
-      if (cartoKey) {
-        L.tileLayer(
-          `https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=${cartoKey}`,
-          {
-            attribution:
-              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
-            maxZoom: 19,
-          }
-        ).addTo(map);
-      } else {
-        L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      /* CARTO's dark basemap. The key is deliberately hardcoded: basemap keys
+         ship to every browser in the tile URLs regardless, so an env var only
+         adds indirection — restrict it by domain in the CARTO dashboard. */
+      L.tileLayer(
+        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
+        {
           attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attributions">CARTO</a>',
           maxZoom: 19,
-        }).addTo(map);
-        const pane = map.getPane("tilePane");
-        if (pane) pane.style.filter = "invert(1) grayscale(1) brightness(0.52) contrast(1.15)";
-      }
+        }
+      ).addTo(map);
 
       const latlngs = stops.map((s) => [s.lat, s.lon] as [number, number]);
 
