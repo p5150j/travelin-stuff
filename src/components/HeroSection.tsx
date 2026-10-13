@@ -56,7 +56,9 @@ export default function HeroSection({ postCount, cityCount, cities }: Props) {
   }, []);
 
   return (
-    <div ref={rootRef} className="relative overflow-hidden py-24 sm:py-32 border-b border-border">
+    // Tight on top like the arus hero (pt-10/16); the generous padding lives
+    // at the bottom where the marquee needs room to breathe.
+    <div ref={rootRef} className="relative overflow-hidden pt-10 sm:pt-16 pb-20 sm:pb-28 border-b border-border">
 
       {/* Scrolling city names — background decoration */}
       <div className="absolute inset-0 flex flex-col justify-center gap-8 pointer-events-none select-none" aria-hidden>
