@@ -446,8 +446,13 @@ body {
   padding: 0.25rem 0.5rem;
 }
 
+/* Ground color must sit close to the dark tiles' own color: at mobile device
+   pixel ratios Leaflet's tile positions round fractionally, leaving hairline
+   seams between tiles — whatever backs them bleeds through as thin lines.
+   --raised (warm, lighter) made the seams glow; --bg is near-identical to the
+   basemap so the same seams disappear. */
 .leaflet-container {
-  background: var(--raised);
+  background: var(--bg);
   font-family: var(--font-sans-family), system-ui, sans-serif;
 }
 

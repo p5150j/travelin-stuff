@@ -45,8 +45,11 @@ export default function PostMap({ city, lat, lon }: Props) {
       });
 
       L.tileLayer(
-        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
-        { maxZoom: 19 }
+        "https://basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=cb1_4jei_1_a284ddb7a10f6ae720ffa171",
+        // detectRetina serves @2x tiles on high-DPR screens — sharper labels,
+        // and tile seams (hairlines where tile edges anti-alias at fractional
+        // positions) mostly vanish.
+        { maxZoom: 19, detectRetina: true }
       ).addTo(map);
 
       // divIcon with zero footprint; the .map-pin chip centers itself with a
