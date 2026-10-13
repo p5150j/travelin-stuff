@@ -146,10 +146,23 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           ) : (
             <span className="meta">Unpublished</span>
           )}
+          {point && (
+            <span className="meta tabular-nums">
+              {point.lat.toFixed(4)}, {point.lon.toFixed(4)}
+            </span>
+          )}
           <span className="meta">
             <span className="tabular-nums">{minutes}</span> min read
           </span>
         </FadeUp>
+
+        {/* Where this was written from — a graphic, not a widget: the map
+            accepts no interaction, it just locates the post. */}
+        {point && (
+          <FadeUp delay={0.1} className="mt-6">
+            <PostMap city={post.city} lat={point.lat} lon={point.lon} />
+          </FadeUp>
+        )}
       </header>
 
       <div className="max-w-3xl mx-auto px-5 sm:px-8 py-12">
@@ -171,20 +184,6 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         <FadeUp delay={0.15}>
           <PostByline city={post.city} />
         </FadeUp>
-
-        {/* Where this was written from — an isolated graphic, not a widget:
-            the map accepts no interaction, it just locates the post. */}
-        {point && (
-          <FadeUp delay={0.2} className="mt-10 border-t border-border pt-8">
-            <div className="flex items-baseline justify-between mb-4">
-              <span className="label">Where</span>
-              <span className="meta tabular-nums">
-                {point.lat.toFixed(4)}, {point.lon.toFixed(4)}
-              </span>
-            </div>
-            <PostMap city={post.city} lat={point.lat} lon={point.lon} />
-          </FadeUp>
-        )}
 
         {/* "More from {city}" moved into the byline, so this is just the way out. */}
         <FadeUp delay={0.2} className="mt-10 border-t border-border pt-8">
